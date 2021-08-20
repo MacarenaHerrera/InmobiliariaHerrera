@@ -1,0 +1,89 @@
+﻿@model IEnumerable<Inmobiliaria.Models.Contrato>
+
+@{
+    ViewData["Title"] = "Contratos";
+    List<Contrato> contratos = ViewData[nameof(Contrato)] as List<Contrato>;
+}
+
+<h1>CONTRATOS</h1>
+
+<p>
+    <a asp-action="Crear">Crear Nuevo</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th class="text-center">
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th class="text-center">
+                @Html.DisplayNameFor(model => model.FechaInicio)
+            </th>
+            <th class="text-center">
+                @Html.DisplayNameFor(model => model.FechaCierre)
+            </th>
+            <th class="text-center">
+                @Html.DisplayNameFor(model => model.Estado)
+            </th>
+            <th class="text-center">
+                @Html.DisplayNameFor(model => model.InmuebleId)
+            </th>
+            <th class="text-center">
+                @Html.DisplayNameFor(model => model.InquilinoId)
+            </th>
+            <th class="text-center">
+                @Html.DisplayNameFor(model => model.Precio)
+            </th>
+            <th class="text-center">
+                Inquilino
+            </th>
+            <th class="text-center">
+                Direccion
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in contratos)
+        {
+        <tr>
+            <td class="text-center">
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td class="text-center">
+                @Html.DisplayFor(modelItem => item.FechaInicio)
+            </td>
+            <td class="text-center">
+                @Html.DisplayFor(modelItem => item.FechaCierre)
+            </td>
+            <td class="text-center">
+                @Html.DisplayFor(modelItem => item.Estado)
+            </td>
+            <td class="text-center">
+                @Html.DisplayFor(modelItem => item.InmuebleId)
+            </td>
+            <td class="text-center">
+                @Html.DisplayFor(modelItem => item.InquilinoId)
+            </td>
+            <td class="text-center">
+                @(item.Inquilino.Nombre + " " + item.Inquilino.Apellido)
+            </td>
+            <td class="text-center">
+                @(item.Inmueble.Direccion)
+            </td>
+            <td class="text-center">
+                @(item.Inmueble.TipoInmueble)
+            </td>
+            <td class="text-center">
+                $@Html.DisplayFor(modelItem => item.Inmueble.Precio)
+            </td>
+
+            <td>
+                <a asp-action="Editar" asp-route-id="@item.Id" class="btn btn-primary" title="Editar">Editar</a>
+
+                <a asp-action="Eliminar" asp-route-id="@item.Id" class="btn btn-danger" title="Eliminar">Eliminar</a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

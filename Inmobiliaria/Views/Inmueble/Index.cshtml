@@ -1,0 +1,81 @@
+﻿@model IEnumerable<Inmobiliaria.Models.Inmueble>
+
+@{
+    ViewData["Title"] = "Index";
+    List<Inmueble> inmuebles = ViewData[nameof(Inmueble)] as List<Inmueble>;
+    //@(item.Duenio.Nombre + " " + item.Duenio.Apellido)
+}
+
+<h1>INMUEBLES</h1>
+
+<p>
+    <a asp-action="Crear" class="btn btn-light">Crear nuevo</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Direccion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Ambientes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Superficie)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PropietarioId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TipoInmueble)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Precio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Disponible)
+            </th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Direccion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Ambientes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Superficie)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Duenio.Nombre) 
+                @Html.DisplayFor(modelItem => item.Duenio.Apellido)
+
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TipoInmueble)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Precio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Disponible)
+            </td>
+            <td>
+                @Html.ActionLink("Editar", "Editar", new { id = item.Id }) |
+                @Html.ActionLink("Eliminar", "Eliminar", new { id = item.Id })
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

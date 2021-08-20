@@ -1,0 +1,86 @@
+﻿@model Inmobiliaria.Models.Inmueble
+
+@{
+    ViewData["Title"] = "Editar";
+    List<Propietario> propietarios = ViewBag.Propietarios;
+    Inmueble anterior = Model;
+}
+
+<h1>Editar</h1>
+
+<h4>Inmueble</h4>
+<hr/>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Editar">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Id" class="control-label"></label>
+                <input asp-for="Id" class="form-control" disabled/>
+                <span asp-validation-for="Id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Direccion" class="control-label"></label>
+                <input asp-for="Direccion" class="form-control" />
+                <span asp-validation-for="Direccion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ambientes" class="control-label"></label>
+                <input asp-for="Ambientes" class="form-control" />
+                <span asp-validation-for="Ambientes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Superficie" class="control-label"></label>
+                <input asp-for="Superficie" class="form-control" />
+                <span asp-validation-for="Superficie" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="TipoInmueble" class="control-label"></label>
+                <select asp-for="TipoInmueble" class="form-control">
+                    <option value="" hidden selected>Seleccionar</option>
+                    <option value="Casa">Casa</option>
+                    <option value="Departamento">Departamento</option>
+                    <option value="Local">Monoambiente</option>
+                    <option value="Depósito">Local</option>
+                </select>
+                <span asp-validation-for="TipoInmueble" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Precio" class="control-label"></label>
+                <input asp-for="Precio" class="form-control" />
+                <span asp-validation-for="Precio" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-3"><label asp-for="Disponible" class="control-label"></label></div>
+                    <div class="col-9">
+                        <input type="checkbox" asp-for="Disponible" checked />
+                        <span asp-validation-for="Disponible" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Propietario</label>
+                <select class="form-control" name="PropietarioId">
+                    @foreach (var item in propietarios)
+                    {
+                       <option value="@item.Id">@(item.Nombre + " " + item.Apellido)</option>
+                    }
+                </select>
+                <span asp-validation-for="PropietarioId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    <a asp-action="Index" class="btn btn-outline-danger">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5z" />
+        </svg>
+    </a>
+</div>
+

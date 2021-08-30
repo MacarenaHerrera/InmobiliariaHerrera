@@ -12,18 +12,23 @@ namespace Inmobiliaria.Models
         [Key]
         [Display(Name = "Código")]
         public int Id { get; set; }
+        
         [Required(ErrorMessage = "Campo obligatorio"),
-            MaxLength(50, ErrorMessage = "Máximo 50 caracteres")]
+             MaxLength(50, ErrorMessage = "Máximo 50 caracteres"),
+            StringLength(8, MinimumLength = 4, ErrorMessage = "El nombre debe ser de 4 caracteres minimamente")]
         public string Nombre { get; set; }
+
         [Required(ErrorMessage = "Campo obligatorio"),
-            MaxLength(50, ErrorMessage = "Máximo 50 caracteres")]
+            MaxLength(50, ErrorMessage = "Máximo 50 caracteres"),
+             StringLength(8, MinimumLength = 4, ErrorMessage = "El apellido debe ser de 4 caracteres minimamente")]
         public string Apellido { get; set; }
 
         [Required(ErrorMessage = "Campo obligatorio"),
-            StringLength(8, MinimumLength = 8, ErrorMessage = "Un DNI debe tener 8 dígitos")]
+            MinLength(8, ErrorMessage = "Un DNI debe tener mínimo 8 dígitos")]
         public string Dni { get; set; }
 
-        [StringLength(15, MinimumLength = 7, ErrorMessage = "Un número de teléfono debe tener entre 7 y 15 dígitos")]
+        [Required(ErrorMessage = "Campo obligatorio"), 
+            MinLength(6, ErrorMessage = "Un número de teléfono debe tener mínimo 6 dígitos")]
         public string Telefono { get; set; }
 
         [Required(ErrorMessage = "Campo obligatorio"),

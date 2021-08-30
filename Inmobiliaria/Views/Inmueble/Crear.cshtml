@@ -2,35 +2,12 @@
 
 @{
     ViewData["Title"] = "Crear";
-    //List<Propietario> p = ViewBag.Propietarios as List<Propietario>;
-    //List<Propietario> p = ViewData[nameof(Propietario)] as List<Propietario>;
-
-    string mensaje = TempData["Mensaje"] + "";
-    string error = TempData["Error"] + "";
-    //<a class="btn btn-secondary" asp-action="Index">Volver a la lista</a>
+    //List<Propietario> propietarios = ViewBag.Propietarios;
 }
 
 <h1>Crear nuevo</h1>
 
 <h4 class="text-center">Inmueble</h4>
-@if (mensaje.Length != 0)
-{
-    <div class="alert alert-dismissible alert-success">
-        @mensaje
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-}
-@if (error.Length != 0)
-{
-    <div class="alert alert-dismissible alert-warning">
-        @error
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-}
 
 <hr />
 <div class="row">
@@ -56,7 +33,7 @@
             <div class="form-group">
                 <label asp-for="TipoInmueble" class="control-label"></label>
                 <select asp-for="TipoInmueble" class="form-control">
-                    <option value="" hidden selected>Seleccionar</option>
+                    <option value="No especificado">Seleccionar</option>
                     <option value="Casa">Casa</option>
                     <option value="Departamento">Departamento</option>
                     <option value="Local">Local</option>
@@ -69,11 +46,16 @@
                 <input asp-for="Precio" class="form-control" />
                 <span asp-validation-for="Precio" class="text-danger"></span>
             </div>
-            
+            <div class="form-group">
+                <label asp-for="Disponible" class="control-label"></label>
+                <input asp-for="Disponible" class="form-control" />
+                <span asp-validation-for="Disponible" class="text-danger"></span>
+            </div>
+
             <div class="form-group">
                 <label class="control-label">Propietario</label>
                 <select class="form-control" name="PropietarioId">
-                    @foreach (var item in (IList<Propietario>)ViewBag.Propietario)
+                    @foreach (var item in (List<Propietario>)ViewBag.Propietario)
                     {
                         <option value="@item.Id">@(item.Nombre + " " + item.Apellido)</option>
                     }

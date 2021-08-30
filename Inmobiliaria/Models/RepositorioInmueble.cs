@@ -24,9 +24,10 @@ namespace Inmobiliaria.Models
 				string sql = "INSERT INTO Inmuebles(Direccion, Ambientes, Superficie, PropietarioId, Tipo, Precio, Disponible) " +
 					$"VALUES(@direccion, @ambientes, @superficie, @propietarioId, @tipoInmueble, @precio, @disponible);" +
 					"SELECT SCOPE_IDENTITY();";
+
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
-					//command.CommandType = CommandType.Text;
+					command.CommandType = CommandType.Text;
 					command.Parameters.AddWithValue("@direccion", entidad.Direccion);
 					command.Parameters.AddWithValue("@ambientes", entidad.Ambientes);
 					command.Parameters.AddWithValue("@superficie", entidad.Superficie);
@@ -41,14 +42,14 @@ namespace Inmobiliaria.Models
 					connection.Close();
 				}
 			}
-			return res;
+			return entidad.Id;
 		}
 		public int Baja(int id)
 		{
 			int res = -1;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"DELETE FROM Inmuebles WHERE Id = {id}";
+				string sql = $"DELETE FROM Inmuebles WHERE {nameof(Inmueble.Id)} = @id;";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
 					//command.CommandType = CommandType.Text;
@@ -71,6 +72,7 @@ namespace Inmobiliaria.Models
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
 					command.CommandType = CommandType.Text;
+					
 					command.Parameters.AddWithValue("@direccion", entidad.Direccion);
 					command.Parameters.AddWithValue("@ambientes", entidad.Ambientes);
 					command.Parameters.AddWithValue("@superficie", entidad.Superficie);
@@ -79,7 +81,6 @@ namespace Inmobiliaria.Models
 					command.Parameters.AddWithValue("@precio", entidad.Precio);
 					command.Parameters.AddWithValue("@disponible", entidad.Disponible ? 1 : 0);
 					command.Parameters.AddWithValue("@id", entidad.Id);
-					
 					connection.Open();
 					res = command.ExecuteNonQuery();
 					connection.Close();

@@ -9,8 +9,8 @@ namespace Inmobiliaria.Models
 {
     public class Contrato
     {
-        [Required(ErrorMessage = "Campo obligatorio"),
-        Display(Name = "Código")]
+        
+        [Display(Name = "Código")]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Campo obligatorio"), 
@@ -26,25 +26,25 @@ namespace Inmobiliaria.Models
         [Required(ErrorMessage = "Campo obligatorio")]
         public int Estado { get; set; }
 
-        [Required(ErrorMessage = "Campo obligatorio"), 
-        Display(Name = "Codigo Inmueble")]
+        [Required(ErrorMessage = "Campo obligatorio"),
+        ForeignKey(nameof(InmuebleId))]
+        [Display(Name = "Dato Inmueble")]
         public int InmuebleId { get; set; }
 
         [Required(ErrorMessage = "Campo obligatorio"),
-        Display(Name = "Codigo Inquilino")]
+        ForeignKey(nameof(InmuebleId))]
+        [Display(Name = "Dato Inquilino")]
         public int InquilinoId { get; set; }
-
-        [Required(ErrorMessage = "Campo obligatorio"),
-        ForeignKey("InquilinoId"),
-        Display(Name = "Inquilino")]
-        public Inquilino Inquilino { get; set; }
-
-        [Required(ErrorMessage = "Campo obligatorio"), 
-        ForeignKey("InmuebleId"),
-        Display(Name = "Inmueble")]
-        public Inmueble Inmueble { get; set; }
 
         [Required(ErrorMessage = "Campo obligatorio")]
         public decimal Precio { get; set; }
+
+        [Display(Name = "Inquilino")]
+        public Inquilino Inquilino { get; set; }
+
+        [Display(Name = "Inmueble")]
+        public Inmueble Inmueble { get; set; }
+
+       
     }
 }

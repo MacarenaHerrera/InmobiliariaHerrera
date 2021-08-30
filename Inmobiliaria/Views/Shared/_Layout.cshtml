@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width" />
 
     <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css">
     <link href="~/css/main.css" rel="stylesheet" />
 
     <script src="https://unpkg.com/mustache@latest"></script>
@@ -16,6 +17,7 @@
     @RenderSection("Styles", false)
 
     <title>@ViewData["Title"] - Inmobiliaria Herrera</title>
+    
 </head>
 <body onload="init()">
     <header>
@@ -49,19 +51,62 @@
         </nav>
     </header>
     <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+        <div class="">
+            @if (ViewBag.Id != null)
+            {//alta exitosa
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>¡Éxito!</strong> La entidad fue dada de alta con nº de código: @ViewBag.Id
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true"><span class="lnr lnr-cross-circle"></span></span>
+                    </button>
+                </div>
+            }
+            else if (ViewBag.Mensaje != null)
+            {//cartel general
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    <strong>Información:</strong> @ViewBag.Mensaje
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true"><span class="lnr lnr-cross-circle"></span></span>
+                    </button>
+                </div>
+            }
+            else if (ViewBag.Error != null)
+            {//alta exitosa
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>¡Error!</strong> @ViewBag.Error
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true"><span class="lnr lnr-cross-circle"></span></span>
+                    </button>
+                </div>
+            }
+            else if (!String.IsNullOrWhiteSpace(ViewBag.Error))
+            {//ocurrió un error
+                <environment names="Development">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>¡Error!</strong> Ocurrió: @ViewBag.Error
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true"><span class="lnr lnr-cross-circle"></span></span>
+                        </button>
+                        <a class="btn btn-primary" data-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false"><span class="lnr lnr-plus-circle"></span></a>
+                        <div class="collapse multi-collapse" id="multiCollapseExample1">
+                            @ViewBag.StackTrace
+                        </div>
+                    </div>
+                </environment>
+            }
+            <div class="m-1 p-1">
+                @RenderBody()
+                </main>
+            </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2021 - Inmobiliaria - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+            <footer class="border-top footer text-muted">
+                <div class="container">
+                    &copy; 2021 - Inmobiliaria Herrera - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                </div>
+            </footer>
+            <script src="~/lib/jquery/dist/jquery.min.js"></script>
+            <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="~/js/site.js" asp-append-version="true"></script>
+            @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

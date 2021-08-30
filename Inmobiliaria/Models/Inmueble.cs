@@ -12,29 +12,29 @@ namespace Inmobiliaria.Models
         [Display(Name = "Código")]
         [Key]
         public int Id { get; set; }
-       
+
         [Required(ErrorMessage = "Campo obligatorio"),
-        MaxLength(50, ErrorMessage = "Máximo 50 caracteres")]
+        MinLength(5, ErrorMessage = "Mínimo 5 caracteres para dirección")]
         public string Direccion { get; set; }
 
-        [Required(ErrorMessage = "Campo obligatorio"),
-        StringLength(2, MinimumLength = 1, ErrorMessage = "Ingrese un numero válido")]
+        [Required(ErrorMessage = "Campo obligatorio")]
         public int Ambientes { get; set; }
-        
-        
-        [Required(ErrorMessage = "Campo obligatorio"),
-        StringLength(8, MinimumLength = 1, ErrorMessage = "Ingrese una superficie válida")]
+
+
+        [Required(ErrorMessage = "Campo obligatorio")]
         public int Superficie { get; set; }
-       
+
         [Required(ErrorMessage = "Campo obligatorio"),
         ForeignKey(nameof(PropietarioId))]
+        [Display(Name = "Propietario")]
         public int PropietarioId { get; set; }
 
+
         [Display(Name = "Tipo")]
+        [Required(ErrorMessage = "Campo obligatorio")]
         public string TipoInmueble { get; set; }
 
-        [Required(ErrorMessage = "Campo obligatorio"),
-        StringLength(8, MinimumLength = 1, ErrorMessage = "Ingrese un precio válido")]
+        [Required(ErrorMessage = "Campo obligatorio")]
         public decimal Precio { get; set; }
         public bool Disponible { get; set; }
 

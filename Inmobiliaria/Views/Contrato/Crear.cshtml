@@ -3,11 +3,10 @@
 @{
     ViewData["Title"] = "Crear";
 }
-
 <h1>Crear</h1>
 
 <h4>Contrato</h4>
-<hr />
+<hr/>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Crear">
@@ -23,29 +22,44 @@
                 <input asp-for="FechaCierre" class="form-control" />
                 <span asp-validation-for="FechaCierre" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Estado" />
-                    @Html.DisplayNameFor(model => model.Estado)
-                </label>
-            </div>
             <div class="form-group">
-                <label asp-for="InmuebleId" class="control-label"></label>
-                <input asp-for="InmuebleId" class="form-control" />
-                <span asp-validation-for="InmuebleId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="InquilinoId" class="control-label"></label>
-                <input asp-for="InquilinoId" class="form-control" />
-                <span asp-validation-for="InquilinoId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Crear" class="btn btn-primary" />
-            </div>
-        </form>
+            <label asp-for="Estado" class="control-label"></label>
+            <input asp-for="Estado" class="form-control" />
+            <span asp-validation-for="Estado" class="text-danger"></span>
     </div>
-</div>
+    <div class="form-group">
+        <label class="control-label">Inmueble</label>
+        <select class="form-control" name="InmuebleId">
+            @foreach (var item in (List<Inmueble>)ViewBag.Inmueble)
+            {
+                <option value="@item.Id">@(item.Direccion + " - " + item.TipoInmueble)</option>
+            }
+        </select>
+        <span asp-validation-for="InmuebleId" class="text-danger"></span>
 
+    </div>
+    <div class="form-group">
+        <label class="control-label">Inquilino</label>
+        <select class="form-control" name="InquilinoId">
+            @foreach (var item in (List<Inquilino>)ViewBag.Inquilino)
+            {
+                <option value="@item.Id">@(item.Nombre + " " + item.Apellido)</option>
+            }
+        </select>
+        <span asp-validation-for="InquilinoId" class="text-danger"></span>
+
+    </div>
+    <div class="form-group">
+        <label asp-for="Precio" class="control-label"></label>
+        <input asp-for="Precio" class="form-control" />
+        <span asp-validation-for="Precio" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Crear" class="btn btn-primary" />
+    </div>
+    </form>
+</div>
+</div>
 <div>
     <a asp-action="Index" class="btn btn-outline-danger">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left" viewBox="0 0 16 16">
@@ -53,7 +67,6 @@
         </svg>
     </a>
 </div>
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

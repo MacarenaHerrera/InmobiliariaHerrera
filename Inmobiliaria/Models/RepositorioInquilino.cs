@@ -53,7 +53,9 @@ namespace Inmobiliaria.Models
             int res = -1;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = "INSERT INTO inquilinos(Nombre, Apellido, Dni, Telefono, Email) " + $"VALUES(@nombre, @apellido, @dni, @telefono, @email);";
+                string sql = "INSERT INTO inquilinos(Nombre, Apellido, Dni, Telefono, Email) " 
+                    + $"VALUES(@nombre, @apellido, @dni, @telefono, @email);" +
+                    "SELECT SCOPE_IDENTITY();"; 
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {

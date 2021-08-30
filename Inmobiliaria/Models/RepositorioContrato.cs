@@ -17,11 +17,11 @@ namespace Inmobiliaria.Models
         }
         public List<Contrato> ObtenerTodos()
         {
-            var contratos = new List<Contrato>();
+            var res = new List<Contrato>();
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"SELECT c.Id, FechaInicio, FechaCierre, Estado, InquilinoId, InmuebleId, Precio, i.Nombre, i.Apellido, i.Dni, inm.Direccion " +
+                string sql = $"SELECT c.Id, c.FechaInicio, c.FechaCierre, c.Estado, c.InquilinoId, c.InmuebleId, c.Precio, i.Nombre, i.Apellido, inm.Direccion " +
                    $" FROM Contratos c " +
                    $"INNER JOIN Inquilinos i ON c.InquilinoId = i.Id " +
                    $"INNER JOIN Inmuebles inm ON c.InmuebleId = inm.Id";
@@ -41,14 +41,13 @@ namespace Inmobiliaria.Models
                             Estado = reader.GetInt32(3),
                             InquilinoId = reader.GetInt32(4),
                             InmuebleId = reader.GetInt32(5),
-
+                            Precio = reader.GetDecimal(6),
 
                             Inquilino = new Inquilino
                             {
                                 Id = reader.GetInt32(4),
-                                Nombre = reader.GetString(6),
-                                Apellido = reader.GetString(7),
-                                Dni = reader.GetString(8)
+                                Nombre = reader.GetString(7),
+                                Apellido = reader.GetString(8),
                             },
 
                             Inmueble = new Inmueble
@@ -58,12 +57,12 @@ namespace Inmobiliaria.Models
                             }
 
                         };
-                        contratos.Add(contrato);
+                        res.Add(contrato);
                     }
                     connection.Close();
                 }
             }
-            return contratos;
+            return res;
         }
 
         public int Alta(Contrato c)
@@ -71,8 +70,8 @@ namespace Inmobiliaria.Models
             int res = -1;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"INSERT INTO Contratos (FechaInicio, FechaCierre, Estado, InquilinoId, InmuebleId ) " +
-                "VALUES (@fechaInicio, @fechaCierre, @estado, @inquilinoId, @inmuebleId);" +
+                string sql = $"INSERT INTO Contratos (FechaInicio, FechaCierre, Estado, InquilinoId, InmuebleId, Precio ) " +
+                "VALUES (@fechaInicio, @fechaCierre, @estado, @inquilinoId, @inmuebleId, @precio);" +
                 "SELECT SCOPE_IDENTITY();";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
@@ -91,7 +90,7 @@ namespace Inmobiliaria.Models
                     connection.Close();
                 }
             }
-            return res;
+            return c.Id;
 
         }
 
@@ -101,7 +100,7 @@ namespace Inmobiliaria.Models
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"SELECT c.Id, FechaInicio, FechaCierre, Estado, InquilinoId, InmuebleId, i.Nombre, i.Apellido, i.Dni, inm.Direccion " +
+                string sql = $"SELECT c.Id, FechaInicio, FechaCierre, Estado, InquilinoId, InmuebleId, c.Precio, i.Nombre, i.Apellido, inm.Direccion " +
                     $" FROM Contratos c " +
                     $"INNER JOIN Inquilinos i ON c.InquilinoId = i.Id " +
                     $"INNER JOIN Inmuebles inm ON c.InmuebleId = inm.Id" +
@@ -123,13 +122,13 @@ namespace Inmobiliaria.Models
                             Estado = reader.GetInt32(3),
                             InquilinoId = reader.GetInt32(4),
                             InmuebleId = reader.GetInt32(5),
+                            Precio = reader.GetDecimal(6),
 
                             Inquilino = new Inquilino
                             {
                                 Id = reader.GetInt32(4),
-                                Nombre = reader.GetString(6),
-                                Apellido = reader.GetString(7),
-                                Dni = reader.GetString(8)
+                                Nombre = reader.GetString(7),
+                                Apellido = reader.GetString(8),
                             },
 
                             Inmueble = new Inmueble
@@ -150,9 +149,10 @@ namespace Inmobiliaria.Models
             int res = -1;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"UPDATE Contratos SET " + "FechaInicio=@fechaInicio, FechaCierre=@fechaCierre, Estado=@estado, InquilinoId=@inquilinoId, InmuebleId=@inmuebleId " +
+                string sql = $"UPDATE Contratos SET " + 
+                    "FechaInicio=@fechaInicio, FechaCierre=@fechaCierre, Estado=@estado," +
+                    "InquilinoId=@inquilinoId, InmuebleId=@inmuebleId, Precio=@precio " +
                     "WHERE Id = @id";
-
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -160,8 +160,10 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@fechaInicio", c.FechaInicio);
                     command.Parameters.AddWithValue("@fechaCierre", c.FechaCierre);
                     command.Parameters.AddWithValue("@estado", c.Estado);
-                    command.Parameters.AddWithValue("@inquilinoId", c.InquilinoId);
                     command.Parameters.AddWithValue("@inmuebleId", c.InmuebleId);
+                    command.Parameters.AddWithValue("@inquilinoId", c.InquilinoId);
+                    command.Parameters.AddWithValue("@precio", c.Precio);
+                    command.Parameters.AddWithValue("@id",c.Id);
 
                     connection.Open();
                     res = command.ExecuteNonQuery();

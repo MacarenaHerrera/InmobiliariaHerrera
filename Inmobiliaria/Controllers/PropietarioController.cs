@@ -29,13 +29,16 @@ namespace Inmobiliaria.Controllers
                 var lista = repositorioPropietario.Obtener();
                 ViewData[nameof(Propietario)] = lista;
                 ViewData["Tittle"] = nameof(Propietario);
-                ViewData["Error"] = TempData["Mensaje"];
+                ViewBag.Id = TempData["Id"];
+                if (TempData.ContainsKey("Mensaje"))
+                    ViewBag.Mensaje = TempData["Mensaje"];
                 return View(lista);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                Json(new { Error = ex.Message });
+                return RedirectToAction(nameof(Index));
             }
             
         }
@@ -68,7 +71,7 @@ namespace Inmobiliaria.Controllers
             {
                 ViewBag.Error = e.Message;
                 ViewBag.StackTrate = e.StackTrace;
-                return View();
+                return View(nameof(Index));
             }
         }
 
@@ -92,7 +95,6 @@ namespace Inmobiliaria.Controllers
                 prop.Dni = collection["Dni"];
                 prop.Email = collection["Email"];
                 prop.Telefono = collection["Telefono"];
-                prop.Clave = collection["Clave"];
 
                 repositorioPropietario.Modificar(prop);
 

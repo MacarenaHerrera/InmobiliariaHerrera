@@ -28,13 +28,22 @@ namespace Inmobiliaria.Controllers
         public ActionResult Index()
         {
 
-            ViewBag.Error = TempData["Error"]; 
-            var lista = repositorioInmueble.ObtenerTodos();
-                
+            try
+            {
+                var lista = repositorioInmueble.ObtenerTodos();
                 ViewData[nameof(Inmueble)] = lista;
-                //if (TempData.ContainsKey("Alta"))
-                //  ViewBag.Alta = TempData["Alta"];
+                ViewData["Tittle"] = nameof(Inmueble);
+                ViewBag.Id = TempData["Id"];
+                if (TempData.ContainsKey("Mensaje"))
+                    ViewBag.Mensaje = TempData["Mensaje"];
                 return View(lista);
+            }
+            catch (Exception ex)
+            {
+
+                Json(new { Error = ex.Message });
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         public ActionResult PorPropietario(int id)
@@ -92,7 +101,7 @@ namespace Inmobiliaria.Controllers
             {
                 ViewBag.Error = e.Message;
                 ViewBag.StackTrate = e.StackTrace;
-                return RedirectToAction(nameof(Index));
+                return View(entidad);
             }
         }
     
@@ -103,10 +112,15 @@ namespace Inmobiliaria.Controllers
         public ActionResult Editar(int id)
         {
 
-            ViewBag.Propietarios = repoPropietario.Obtener();
             var entidad = repositorioInmueble.ObtenerPorId(id);
-                //if (entidad == null) return RedirectToAction(nameof(Index));
-           return View(entidad);
+            ViewBag.Propietarios = repoPropietario.Obtener();
+
+            //if (entidad == null) return RedirectToAction(nameof(Index));
+            if (TempData.ContainsKey("Mensaje"))
+                ViewBag.Mensaje = TempData["Mensaje"];
+            if (TempData.ContainsKey("Error"))
+                ViewBag.Error = TempData["Error"];
+            return View(entidad);
           
             
         }
@@ -114,29 +128,21 @@ namespace Inmobiliaria.Controllers
         // POST: Inmueble/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Editar(int id, IFormCollection collection)
+        public ActionResult Editar(int id, Inmueble entidad)
         {
             try
             {
-                Inmueble i = repositorioInmueble.ObtenerPorId(id);
-                i.Direccion = collection["Direccion"];
-                i.Ambientes = Convert.ToInt32(collection["Ambientes"]);
-                i.Superficie = Convert.ToInt32(collection["Superficie"]);
-                i.PropietarioId = Convert.ToInt32(collection["PropietarioId"]);
-                i.TipoInmueble = collection["TipoInmueble"];
-                i.Precio = Convert.ToInt32(collection["Precio"]);
-                i.Disponible = Convert.ToByte(collection["Disponible"])==1;
-                
-                repositorioInmueble.Modificar(i);
+                entidad.Id = id;
+                repositorioInmueble.Modificar(entidad);
                 TempData["Mensaje"] = "Datos guardados correctamente";
                 return RedirectToAction(nameof(Index));
             }
-            
             catch (Exception ex)
             {
+                ViewBag.Propietarios = repoPropietario.Obtener();
                 ViewBag.Error = ex.Message;
                 ViewBag.StackTrate = ex.StackTrace;
-                return RedirectToAction(nameof(Index));
+                return View(entidad);
             }
         }
 

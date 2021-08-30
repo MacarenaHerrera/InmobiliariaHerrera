@@ -23,17 +23,21 @@ namespace Inmobiliaria.Controllers
            
             public ActionResult Index()
             {
-                try
-                {
-                    var lista = repositorioInquilino.Obtener();
-                    ViewData[nameof(Inquilino)] = lista;
-                    return View(lista);
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
+            try
+            {
+                var lista = repositorioInquilino.Obtener();
+                ViewBag.Id = TempData["Id"];
+                if (TempData.ContainsKey("Mensaje"))
+                    ViewBag.Mensaje = TempData["Mensaje"];
+                return View(lista);
             }
+            catch (Exception ex)
+            {
+
+                Json(new { Error = ex.Message });
+                return RedirectToAction(nameof(Index));
+            }
+        }
 
             public ActionResult Details(int id)
             {
@@ -61,8 +65,7 @@ namespace Inmobiliaria.Controllers
             catch (Exception e)
             {
                 ViewBag.Error = e.Message;
-                ViewBag.StackTrate = e.StackTrace;
-                return View();
+                return RedirectToAction(nameof(Index));
             }
         }
 

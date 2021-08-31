@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -9,6 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Inmobiliaria.Data;
 
 namespace Inmobiliaria
 {
@@ -38,6 +40,9 @@ namespace Inmobiliaria
                 options.AddPolicy("Administrador", policy => policy.RequireRole("Administrador", "SuperAdministrador"));
                 options.AddPolicy("SuperAdministrador", policy => policy.RequireRole("SuperAdministrador"));
             });
+
+            services.AddDbContext<InmobiliariaContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("InmobiliariaContext")));
         }
 
 

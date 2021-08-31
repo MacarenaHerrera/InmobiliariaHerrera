@@ -1,0 +1,48 @@
+﻿@model Inmobiliaria.Models.Pago
+
+@{
+    ViewData["Title"] = "Deta";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Pago</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Fecha)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Fecha)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Importe)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Importe)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Contrato)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Contrato.Id)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Contrato.Inquilino)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Contrato.InquilinoId)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Contrato.Inmueble)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Contrato.InmuebleId)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Editar" asp-route-id="@Model.Id">Editar</a> |
+    <a asp-action="Index">Volver a la lista</a>
+</div>

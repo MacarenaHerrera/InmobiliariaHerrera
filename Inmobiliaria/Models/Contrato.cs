@@ -44,7 +44,5 @@ namespace Inmobiliaria.Models
 
         [Display(Name = "Inmueble")]
         public Inmueble Inmueble { get; set; }
-
-       
     }
 }

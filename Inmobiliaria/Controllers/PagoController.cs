@@ -9,6 +9,7 @@ using Inmobiliaria.Data;
 using Inmobiliaria.Models;
 using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Inmobiliaria.Controllers
 {
@@ -43,6 +44,24 @@ namespace Inmobiliaria.Controllers
 
                 Json(new { Error = ex.Message });
                 return RedirectToAction(nameof(Index));
+            }
+        }
+
+        // GET: InmuebleController/PorPropietario/5
+        
+        public ActionResult PorContrato(int id)
+        {
+            if (id == 0)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                IList<Pago> lista = repositorioPago.ObtenerPorContrato(id);
+                Contrato c = repositorioContrato.ObtenerContrato(id);
+                if (c == null) return RedirectToAction(nameof(Index));
+                ViewBag.Contrato = c;
+                return View("Index", lista);
             }
         }
 

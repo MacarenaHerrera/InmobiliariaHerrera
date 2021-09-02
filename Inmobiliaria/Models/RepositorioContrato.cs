@@ -174,6 +174,57 @@ namespace Inmobiliaria.Models
             return res;
         }
 
+        public List<Contrato> ObtenerPorInmueble(int id)
+        {
+            List<Contrato> lista = new List<Contrato>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = $"SELECT c.{nameof(Contrato.Id)}, {nameof(Contrato.FechaInicio)}, {nameof(Contrato.FechaCierre)}, " +
+                    $"{nameof(Contrato.Estado)}, {nameof(Contrato.InmuebleId)}, {nameof(Contrato.InquilinoId)}, c.{nameof(Contrato.Precio)} " +
+                    $"{nameof(Contrato.Inquilino.Nombre)}, {nameof(Contrato.Inquilino.Apellido)}, {nameof(Contrato.Inmueble.Direccion)}, " +
+                    $"inm.{nameof(Contrato.Inmueble.Precio)} " +
+                    $"FROM Contratos c " +
+                    $"INNER JOIN Inquilinos inq ON c.InquilinoId = inq.Id " +
+                    $"INNER JOIN Inmuebles inm ON c.InmuebleId = inm.Id " +
+                    $"WHERE inm.Id = @id";
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@id", id);
+                    connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        lista.Add(new Contrato
+                        {
+                            Id = reader.GetInt32(0),
+                            FechaInicio = reader.GetDateTime(1),
+                            FechaCierre = reader.GetDateTime(2),
+                            Estado = reader.GetInt32(3),
+                            InmuebleId = reader.GetInt32(4),
+                            InquilinoId = reader.GetInt32(5),
+                            Precio = reader.GetDecimal(6),
+                            Inmueble = new Inmueble
+                            {
+                                Id = reader.GetInt32(4),
+                                Direccion = reader.GetString(7),
+                                Precio = reader.GetDecimal(8)
+                            },
+                            Inquilino = new Inquilino
+                            {
+                                Id = reader.GetInt32(5),
+                                Nombre = reader.GetString(9),
+                                Apellido = reader.GetString(10)
+                            }
+                        });
+
+                    }
+                }
+            }
+
+            return lista;
+        }
+
         public int Baja(int id)
         {
             int res = -1;

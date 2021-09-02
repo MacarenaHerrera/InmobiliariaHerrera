@@ -46,6 +46,15 @@ namespace Inmobiliaria.Controllers
             }
         }
 
+        public ActionResult PorInmueble(int id)
+        {
+            IList<Contrato> lista = repositorioContrato.ObtenerPorInmueble(id);
+            Inmueble ent = repositorioInmueble.ObtenerPorId(id);
+            if (ent == null) return RedirectToAction(nameof(Index));
+            ViewBag.PorInmueble = ent;
+            return View("Index", lista);
+        }
+
         // GET: ContratoController/Details/5
         public ActionResult Details(int id)
         {

@@ -140,7 +140,7 @@ namespace Inmobiliaria.Models
 			Inmueble entidad = null;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"SELECT i.Id, Direccion, Ambientes, Superficie, PropietarioId, Tipo, Precio, Disponible, " + $"p.Nombre, p.Apellido" +
+				string sql = $"SELECT i.Id, Direccion, Ambientes, Superficie, PropietarioId, Tipo, i.Precio, Disponible, p.Nombre, p.Apellido" +
 					$" FROM Inmuebles i INNER JOIN Propietarios p ON i.PropietarioId = p.Id" +
 					$" WHERE i.Id=@id";
 				using (SqlCommand command = new SqlCommand(sql, connection))
@@ -178,22 +178,23 @@ namespace Inmobiliaria.Models
 
 		public List<Inmueble> BuscarPorPropietario(int idPropietario)
 		{
-			List<Inmueble> lista = new List<Inmueble>();
-			//Inmueble entidad = new Inmueble();
+			List<Inmueble> res = new List<Inmueble>();
+			Inmueble entidad = null;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"SELECT i.Id, Direccion, Ambientes, Superficie, PropietarioId, Tipo, Precio, Disponible" + $"p.Nombre, p.Apellido" +
+				string sql = $"SELECT i.Id, Direccion, Ambientes, Superficie, PropietarioId, Tipo, Precio, Disponible, p.Nombre, p.Apellido" +
 					$" FROM Inmuebles i INNER JOIN Propietarios p ON i.PropietarioId = p.Id" +
-					$" WHERE i.PropietarioId=@id";
+					$" WHERE i.PropietarioId=@idPropietario";
+
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
-					command.Parameters.AddWithValue("@id", idPropietario);
-					//command.CommandType = CommandType.Text;
+					command.Parameters.Add("@idPropietario", SqlDbType.Int).Value = idPropietario;
+					command.CommandType = CommandType.Text;
 					connection.Open();
 					var reader = command.ExecuteReader();
 					while (reader.Read())
 					{
-						lista.Add(new Inmueble
+						entidad = new Inmueble
 						{
 							Id = reader.GetInt32(0),
 							Direccion = reader.GetString(1),
@@ -209,14 +210,14 @@ namespace Inmobiliaria.Models
 								Id = reader.GetInt32(4),
 								Nombre = reader.GetString(8),
 								Apellido = reader.GetString(9)
-							},
-						});
-						
+							}
+						};
+						res.Add(entidad);
 					}
 					connection.Close();
 				}
 			}
-			return lista;
+			return res;
 		}
 	}
 }

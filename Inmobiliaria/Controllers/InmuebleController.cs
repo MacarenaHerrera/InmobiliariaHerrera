@@ -50,16 +50,19 @@ namespace Inmobiliaria.Controllers
         {
             try
             {
-                Propietario ent = repoPropietario.obtenerPropietario(id);
-                if (ent == null) return RedirectToAction(nameof(Index));
-                ViewBag.Propietario = ent;
-                IList<Inmueble> lista = repositorioInmueble.BuscarPorPropietario(id);
-                return View("Index", lista);
+                var lista = repositorioInmueble.BuscarPorPropietario(id);
+                ViewData[nameof(Inmueble)] = lista;
+                ViewData["Tittle"] = nameof(Inmueble);
+                ViewBag.Id = TempData["Id"];
+                if (TempData.ContainsKey("Mensaje"))
+                    ViewBag.Mensaje = TempData["Mensaje"];
+                return View(lista);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                Json(new { Error = ex.Message });
+                return RedirectToAction(nameof(Index));
             }
         }
 

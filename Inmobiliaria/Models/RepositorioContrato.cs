@@ -70,8 +70,8 @@ namespace Inmobiliaria.Models
             int res = -1;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"INSERT INTO Contratos (FechaInicio, FechaCierre, Estado, InquilinoId, InmuebleId, Precio ) " +
-                "VALUES (@fechaInicio, @fechaCierre, @estado, @inquilinoId, @inmuebleId, @precio);" +
+                string sql = $"INSERT INTO Contratos (FechaInicio, FechaCierre, Estado, InquilinoId, InmuebleId, Precio, GaranteId ) " +
+                "VALUES (@fechaInicio, @fechaCierre, @estado, @inquilinoId, @inmuebleId, @precio @garanteId);" +
                 "SELECT SCOPE_IDENTITY();";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
@@ -83,6 +83,7 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@inquilinoId", c.InquilinoId);
                     command.Parameters.AddWithValue("@inmuebleId", c.InmuebleId);
                     command.Parameters.AddWithValue("@precio", c.Precio);
+                    command.Parameters.AddWithValue("@precio", c.GaranteId);
 
                     connection.Open();
                     res = Convert.ToInt32(command.ExecuteScalar());

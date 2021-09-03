@@ -39,10 +39,18 @@ namespace Inmobiliaria.Models
         [Required(ErrorMessage = "Campo obligatorio")]
         public decimal Precio { get; set; }
 
+        [Required(ErrorMessage = "Campo obligatorio"),
+        ForeignKey(nameof(GaranteId))]
+        [Display(Name = "Dato Garante")]
+        public int GaranteId { get; set; }
+
         [Display(Name = "Inquilino")]
         public Inquilino Inquilino { get; set; }
 
         [Display(Name = "Inmueble")]
         public Inmueble Inmueble { get; set; }
+
+        [Display(Name = "Garante")]
+        public Inmueble Garante { get; set; }
     }
 }

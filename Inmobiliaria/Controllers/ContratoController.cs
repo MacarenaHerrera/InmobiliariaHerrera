@@ -15,6 +15,7 @@ namespace Inmobiliaria.Controllers
        RepositorioContrato repositorioContrato;
        RepositorioInquilino repositorioInquilino;
         RepositorioInmueble repositorioInmueble;
+        RepositorioGarante repositorioGarante;
         private readonly IConfiguration configuration;
 
         public ContratoController(IConfiguration configuration)
@@ -23,6 +24,7 @@ namespace Inmobiliaria.Controllers
             repositorioInmueble = new RepositorioInmueble(configuration);
             repositorioInquilino = new RepositorioInquilino(configuration);
             repositorioContrato = new RepositorioContrato(configuration);
+            repositorioGarante = new RepositorioGarante(configuration);
         }
 
         // GET: ContratoController
@@ -68,6 +70,7 @@ namespace Inmobiliaria.Controllers
         {
             ViewBag.Inquilino = repositorioInquilino.Obtener();
             ViewBag.Inmueble = repositorioInmueble.ObtenerTodos();
+            ViewBag.Garante = repositorioGarante.Obtener();
             return View();
         }
 

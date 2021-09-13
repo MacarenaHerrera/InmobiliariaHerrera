@@ -7,6 +7,13 @@ using System.Threading.Tasks;
 
 namespace Inmobiliaria.Models
 {
+    public enum estadoContrato
+    {
+        Vigente = 1,
+        Vencido = 2,
+        Cancelado = 3
+    }
+
     public class Contrato
     {
         
@@ -25,6 +32,7 @@ namespace Inmobiliaria.Models
 
         [Required(ErrorMessage = "Campo obligatorio")]
         public int Estado { get; set; }
+        public string EstadoInmueble => ((estadoContrato)Estado).ToString();
 
         [Required(ErrorMessage = "Campo obligatorio"),
         ForeignKey(nameof(InmuebleId))]
@@ -43,14 +51,34 @@ namespace Inmobiliaria.Models
         ForeignKey(nameof(GaranteId))]
         [Display(Name = "Dato Garante")]
         public int GaranteId { get; set; }
+              
+        [Display(Name = "Inmueble")]
+        public Inmueble Inmueble { get; set; }
 
         [Display(Name = "Inquilino")]
         public Inquilino Inquilino { get; set; }
 
-        [Display(Name = "Inmueble")]
-        public Inmueble Inmueble { get; set; }
 
         [Display(Name = "Garante")]
-        public Inmueble Garante { get; set; }
+        public Garante Garante { get; set; }
+
+        public string TipoNombre => Estado > 0 ? ((estadoContrato)Estado).ToString() : "";
+
+        public static IDictionary<int, string> ObtenerEstados()
+        {
+            SortedDictionary<int, string> estados = new SortedDictionary<int, string>();
+            Type tipoEnumEstado = typeof(estadoContrato);
+            foreach (var valor in Enum.GetValues(tipoEnumEstado))
+            {
+                estados.Add((int)valor, Enum.GetName(tipoEnumEstado, valor));
+            }
+            return estados;
+        }
+
+        [Display(Name = "Multa Cancelación")]
+        [DataType(DataType.Currency)]
+        public decimal CalcularMulta() => FechaCierre.Subtract(DateTime.Now).TotalDays < (FechaCierre.Subtract(FechaInicio).TotalDays / 2) ? Precio : (Precio * 2);
+     
+
     }
 }

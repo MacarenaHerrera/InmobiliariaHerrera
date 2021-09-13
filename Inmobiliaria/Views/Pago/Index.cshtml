@@ -1,52 +1,70 @@
 ﻿@model IEnumerable<Inmobiliaria.Models.Pago>
 
 @{
-    ViewData["Title"] = "Pagos";
-    
+    ViewData["Title"] = "Index";
+    Contrato c = (Contrato)ViewBag.Contrato;
 }
 
-<h1>PAGOS</h1>
+<h1><i class="bi bi-credit-card-fill">   </i>Pagos@(" de " + c.Inquilino.Apellido + " " + c.Inquilino.Nombre + " en " + c.Inmueble.Direccion)</h1>
 
-<p>
-    <a asp-action="Crear" class="btn btn-light">Crear nuevo</a>
-</p>
+
 <table class="table">
     <thead>
         <tr>
-            <th maxwidth="60px">
+            <th class="text-center">
                 @Html.DisplayNameFor(model => model.Id)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Fecha)
-            </th>
-            <th>
+           
+            <th class="text-center">
                 @Html.DisplayNameFor(model => model.Importe)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ContratoId)
+
+            <th class="text-center">
+                @Html.DisplayNameFor(model => model.NumeroPago)
             </th>
-            <th></th>
+
+            <th class="text-center">
+                @Html.DisplayNameFor(model => model.Fecha)
+            </th>
+
+            <th hidden>@Html.DisplayNameFor(model => model.ContratoId)</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+
+
+
+        @foreach (var item in Model)
+        {
         <tr>
-            <td>
+            <td class="text-center">
                 @Html.DisplayFor(modelItem => item.Id)
             </td>
-            <td>
+
+            <td class="text-center">
+                $ @Html.DisplayFor(modelItem => item.Importe)
+
+            </td>
+            <td class="text-center">
+                @Html.DisplayFor(modelItem => item.NumeroPago)
+            </td>
+            <td class="text-center">
                 @Html.DisplayFor(modelItem => item.Fecha)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Importe)
-            </td>
-            <td>
+            <td class="text-center" hidden>
                 @Html.DisplayFor(modelItem => item.ContratoId)
             </td>
             <td>
-                <a asp-action="Editar" title="Editar" asp-route-id="@item.Id"><i class="bi bi-pencil-fill"></i></a> |
-                <a asp-action="Details" title="Detalles" asp-route-id="@item.Id"><i class="bi bi-file-earmark-text-fill text-info"></i></a>
-                
+                <a asp-action="Editar" asp-route-id="@item.Id" class="btn btn-outline-primary" title="Editar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
+                        <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z" />
+                    </svg>
+                </a>
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-success" title="Detalles">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-wallet2" viewBox="0 0 16 16">
+                        <path d="M12.136.326A1.5 1.5 0 0 1 14 1.78V3h.5A1.5 1.5 0 0 1 16 4.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 13.5v-9a1.5 1.5 0 0 1 1.432-1.499L12.136.326zM5.562 3H13V1.78a.5.5 0 0 0-.621-.484L5.562 3zM1.5 4a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-13z" />
+                    </svg>
+                </a>
                 @if (User.IsInRole("Admin"))
                 {
                     <span> | <a asp-action="Eliminar" title="Eliminar" asp-route-id="@item.Id"><i class="bi bi-trash-fill text-danger"></i></a></span>
@@ -57,6 +75,9 @@
                 }
             </td>
         </tr>
-}
+        }
     </tbody>
 </table>
+<p>
+    <a asp-action="Crear" class="btn btn-outline-dark" asp-route-id="@ViewBag.ContratoId">Pagar</a>
+</p>

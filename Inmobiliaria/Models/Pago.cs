@@ -27,5 +27,9 @@ namespace Inmobiliaria.Models
 
         [Display(Name = "Contrato")]
         public Contrato Contrato { get; set; }
+
+        [Display(Name = "Número de Pago")]
+        public int NumeroPago => 1 + Fecha.Month - (Contrato != null ? Contrato.FechaInicio.Month : Fecha.Month) +
+            (Fecha.Year - (Contrato != null ? Contrato.FechaInicio.Year : Fecha.Year)) * 12;
     }
 }

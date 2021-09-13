@@ -8,7 +8,6 @@
 <h3>¿Está seguro de querer eliminar este inmueble?</h3>
 
 <div>
-    <h4>Inmueble</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -52,13 +51,9 @@
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.PropietarioId)
+            @(Model.Duenio.Nombre + " " + Model.Duenio.Apellido)
         </dd>
-        <dt class="col-3 col-sm-3">
-            @Html.DisplayNameFor(model => model.Disponible)
-        </dt>
-        <dt class="col-9 col-sm-9 border form-control">
-            @Html.DisplayFor(model => model.Disponible)
-        </dt>
+        
     </dl>
 
     <form asp-action="Eliminar">

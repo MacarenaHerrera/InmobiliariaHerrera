@@ -9,6 +9,7 @@ namespace Inmobiliaria.Models
 {
     public class Inmueble
     {
+       
         [Display(Name = "Código")]
         [Key]
         public int Id { get; set; }
@@ -36,9 +37,10 @@ namespace Inmobiliaria.Models
 
         [Required(ErrorMessage = "Campo obligatorio")]
         public decimal Precio { get; set; }
-        public bool Disponible { get; set; }
+        public bool Disponible { get; set; } = true;
 
         [Display(Name = "Dueño")]
         public Propietario Duenio { get; set; }
+       
     }
 }

@@ -129,24 +129,26 @@ namespace Inmobiliaria.Models
 		}
 		public List<Pago> ObtenerTodos()
 		{
-			var res = new List<Pago>();
+			var lista = new List<Pago>();
 			
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
 
-				string sql = "SELECT p.Id, Fecha, Importe, ContratoId, " +
-					"c.InmuebleId, c.InquilinoId"+
-					" FROM Pagos p INNER JOIN Contratos c ON p.ContratoId = c.Id ";
-
+				string sql = $"SELECT p.{nameof(Pago.Id)}, {nameof(Pago.Fecha)}, " +
+					$"{nameof(Pago.Importe)}, {nameof(Pago.ContratoId)}, " +
+					$"{nameof(Pago.Contrato.Inquilino.Apellido)}, {nameof(Pago.Contrato.Inquilino.Nombre)}, " +
+					$"{nameof(Pago.Contrato.Inmueble.Direccion)} " +
+					$"FROM Pagos p " +
+					$"INNER JOIN Contratos c ON p.ContratoId = c.Id " +
+					$"INNER JOIN Inquilinos inq ON c.InquilinoId = inq.Id " +
+					$"INNER JOIN Inmuebles inm ON c.InmuebleId = inm.Id;";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
-					command.CommandType = CommandType.Text;
 					connection.Open();
-					var reader = command.ExecuteReader();
+					SqlDataReader reader = command.ExecuteReader();
 					while (reader.Read())
 					{
-						Pago entidad = new Pago
-
+						lista.Add(new Pago
 						{
 							Id = reader.GetInt32(0),
 							Fecha = reader.GetDateTime(1),
@@ -155,17 +157,22 @@ namespace Inmobiliaria.Models
 							Contrato = new Contrato
 							{
 								Id = reader.GetInt32(3),
-								InmuebleId = reader.GetInt32(4),
-								InquilinoId = reader.GetInt32(5),
-							},
-
-						};
-						res.Add(entidad);
+								Inquilino = new Inquilino
+								{
+									Apellido = reader.GetString(4),
+									Nombre = reader.GetString(5)
+								},
+								Inmueble = new Inmueble
+								{
+									Direccion = reader.GetString(6)
+								}
+							}
+						});
 					}
-					connection.Close();
 				}
 			}
-			return res;
+
+			return lista;
 		}
 
 		public Pago ObtenerPorId(int id)
@@ -173,16 +180,20 @@ namespace Inmobiliaria.Models
 			Pago entidad = null;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"SELECT p.Id, Fecha, Importe, ContratoId, " + $"c.InmuebleId, c.InquilinoId" +
-					$" FROM Pagos p INNER JOIN Contratos c ON p.ContratoId = c.Id " +
-					$" WHERE p.Id=@id";
-
+				string sql = $"SELECT p.{nameof(Pago.Id)}, {nameof(Pago.Fecha)}, " +
+					$"{nameof(Pago.Importe)}, {nameof(Pago.ContratoId)}, " +
+					$"{nameof(Pago.Contrato.Inquilino.Apellido)}, {nameof(Pago.Contrato.Inquilino.Nombre)}, " +
+					$"{nameof(Pago.Contrato.Inmueble.Direccion)}, {nameof(Pago.Contrato.FechaInicio)} " +
+					$"FROM Pagos p " +
+					$"INNER JOIN Contratos c ON p.ContratoId = c.Id " +
+					$"INNER JOIN Inquilinos inq ON c.InquilinoId = inq.Id " +
+					$"INNER JOIN Inmuebles inm ON c.InmuebleId = inm.Id " +
+					$"WHERE p.{nameof(Pago.Id)}=@id;";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
-					command.Parameters.Add("@id", SqlDbType.Int).Value = id;
-					command.CommandType = CommandType.Text;
+					command.Parameters.AddWithValue("@id", id);
 					connection.Open();
-					var reader = command.ExecuteReader();
+					SqlDataReader reader = command.ExecuteReader();
 					if (reader.Read())
 					{
 						entidad = new Pago
@@ -191,13 +202,22 @@ namespace Inmobiliaria.Models
 							Fecha = reader.GetDateTime(1),
 							Importe = reader.GetDecimal(2),
 							ContratoId = reader.GetInt32(3),
-							
+
 							Contrato = new Contrato
 							{
 								Id = reader.GetInt32(3),
-								InmuebleId = reader.GetInt32(4),
-								InquilinoId = reader.GetInt32(5),
+
+							Inquilino = new Inquilino
+							{
+									Apellido = reader.GetString(4),
+									Nombre = reader.GetString(5)
 							},
+							Inmueble = new Inmueble
+							{
+							Direccion = reader.GetString(6)
+							},
+							FechaInicio = reader.GetDateTime(7)
+							}
 						};
 					}
 					connection.Close();

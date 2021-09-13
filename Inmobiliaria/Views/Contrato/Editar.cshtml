@@ -31,7 +31,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="Estado" class="control-label"></label>
-                <input asp-for="Estado" class="form-control" />
+                <select class="form-control" name="Estado">
+                    @foreach (var kvp in (IDictionary<int, string>)ViewBag.Estados)
+                    {
+                        <option value="@kvp.Key">@kvp.Value</option>
+                    }
+                </select>
                 <span asp-validation-for="Estado" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -58,6 +63,18 @@
                 <label asp-for="Precio" class="control-label"></label>
                 <input asp-for="Precio" class="form-control" />
                 <span asp-validation-for="Precio" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Garante</label>
+                <select class="form-control" name="GaranteId">
+                    @foreach (var item in (List<Garante>)ViewBag.Garantes)
+                    {
+                        @:<option @(item.Id == Model.GaranteId ? "selected" : "") value="@item.Id">@(item.Nombre)</option>
+                    }
+                </select>
+                <span asp-validation-for="GaranteId" class="text-danger"></span>
+
+                <a asp-controller="Garante" asp-action="Crear">Crear nuevo garante</a>
             </div>
             <div class="form-group">
                 <input type="submit" value="Guardar" class="btn btn-primary" />

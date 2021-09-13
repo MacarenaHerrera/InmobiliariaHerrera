@@ -97,7 +97,7 @@ namespace Inmobiliaria.Models
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
 				
-				string sql = "SELECT i.Id, Direccion, Ambientes, Superficie, PropietarioId, Tipo, Precio, Disponible, " +
+				string sql = "SELECT i.Id, Direccion, Ambientes, Superficie, PropietarioId, Tipo, i.Precio, Disponible, " +
 					"p.Nombre, p.Apellido" +
 					" FROM Inmuebles i INNER JOIN Propietarios p ON i.PropietarioId = p.Id ";
 
@@ -140,8 +140,9 @@ namespace Inmobiliaria.Models
 			Inmueble entidad = null;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"SELECT i.Id, Direccion, Ambientes, Superficie, PropietarioId, Tipo, i.Precio, Disponible, p.Nombre, p.Apellido" +
-					$" FROM Inmuebles i INNER JOIN Propietarios p ON i.PropietarioId = p.Id" +
+				string sql = $"SELECT i.Id, Direccion, Ambientes, Superficie, PropietarioId, Tipo, " +
+					$"i.Precio, Disponible, p.Nombre, p.Apellido " +
+					$"FROM Inmuebles i INNER JOIN Propietarios p ON i.PropietarioId = p.Id" +
 					$" WHERE i.Id=@id";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
@@ -175,6 +176,47 @@ namespace Inmobiliaria.Models
 			}
 			return entidad;
 		}
+
+		public IList<Inmueble> ObtenerDisponibles()
+		{
+			IList<Inmueble> lista = new List<Inmueble>();
+
+			using (SqlConnection connection = new SqlConnection(connectionString))
+			{
+				string sql = $"SELECT i.Id, Direccion, Ambientes, Superficie, PropietarioId, Tipo, i.Precio, Disponible, p.Nombre, p.Apellido" +
+					$" FROM Inmuebles i INNER JOIN Propietarios p ON i.PropietarioId = p.Id" +					
+					$" WHERE i.Disponible = 1;";
+				using (SqlCommand command = new SqlCommand(sql, connection))
+				{
+					connection.Open();
+					SqlDataReader reader = command.ExecuteReader();
+					while (reader.Read())
+					{
+						lista.Add(new Inmueble
+						{
+							Id = reader.GetInt32(0),
+							Direccion = reader.GetString(1),
+							Ambientes = reader.GetInt32(2),
+							Superficie = reader.GetInt32(3),
+							PropietarioId = reader.GetInt32(4),
+							TipoInmueble = reader.GetString(5),
+							Precio = reader.GetDecimal(6),
+							Disponible = reader.GetByte(7) == 1,
+
+							Duenio = new Propietario
+							{
+								Id = reader.GetInt32(4),
+								Nombre = reader.GetString(8),
+								Apellido = reader.GetString(9),
+							}
+						}); 
+					}
+				}
+			}
+
+			return lista;
+		}
+
 
 		public List<Inmueble> BuscarPorPropietario(int idPropietario)
 		{

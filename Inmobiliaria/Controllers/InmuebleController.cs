@@ -107,7 +107,11 @@ namespace Inmobiliaria.Controllers
                 return View(entidad);
             }
         }
-    
+        public ActionResult Disponibles()
+        {
+            IList<Inmueble> lista = repositorioInmueble.ObtenerDisponibles();
+            return View(lista);
+        }
 
 
 

@@ -1,48 +1,60 @@
 ﻿@model Inmobiliaria.Models.Pago
 
 @{
-    ViewData["Title"] = "Deta";
+    ViewData["Title"] = "Detalles";
 }
 
-<h1>Details</h1>
+<h1>Detalles de Pago</h1>
 
 <div>
-    <h4>Pago</h4>
+
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Fecha)
+            @Html.DisplayNameFor(model => model.Fecha):
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Fecha)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Importe)
+            @Html.DisplayNameFor(model => model.Importe):
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Importe)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Contrato)
+            Inquilino:
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Contrato.Id)
+            @Html.DisplayFor(model => model.Contrato.Inquilino.Apellido)
+            @Html.DisplayFor(model => model.Contrato.Inquilino.Nombre)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Contrato.Inquilino)
+            Direccion inmueble:
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Contrato.InquilinoId)
+            @Html.DisplayFor(model => model.Contrato.Inmueble.Direccion)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Contrato.Inmueble)
+            Inicio contrato:
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Contrato.InmuebleId)
+            @Html.DisplayFor(model => model.Contrato.FechaInicio)
+        </dd>
+        <dt class="col-sm-2">
+            Fin contrato:
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Contrato.FechaCierre)
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Editar" asp-route-id="@Model.Id">Editar</a> |
-    <a asp-action="Index">Volver a la lista</a>
+    <a asp-action="PorContrato" class="btn btn-outline-danger" asp-route-id="@Model.ContratoId">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5z" />
+        </svg>
+    </a>
 </div>
+
+

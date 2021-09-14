@@ -24,71 +24,126 @@
 </head>
 <body onload="init()">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-light border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">INMOBILIARIA HERRERA</a>
+                <a class="navbar-brand  " asp-area="" asp-controller="Home" asp-action="Index">Inmobiliaria Herrera</a>
+                
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        
-                        <div class="dropdown ml-1 mr-1">
-                            <button class="btn btn-outline-dark dropdown-toggle"
-                                    type="button" id="dropdownMenu1" data-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false">
-                                <i class="bi bi-file-person">Propietarios</i>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                                    aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
                             </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Propietario" asp-action="Index">Lista</a>
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Propietario" asp-action="Crear">Crear</a>
+                            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                                <ul class="navbar-nav flex-grow-1">
+                                    @if (User.IsInRole("Administrador") || User.IsInRole("SuperAdministrador"))
+                                    {
 
+                                        <div class="dropdown ml-1 mr-1">
+                                            <button class="btn btn-outline-dark dropdown-toggle"
+                                                    type="button" id="dropdownMenu1" data-toggle="dropdown"
+                                                    aria-haspopup="true" aria-expanded="false">
+                                                Usuarios
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                                <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Index">Usuarios</a>
+                                                <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Crear">Crear</a>
+                                            </div>
+                                        </div>
+
+                                    }
+                                    <div class="dropdown ml-1 mr-1">
+                                        <button class="btn btn-outline-dark dropdown-toggle"
+                                                type="button" id="dropdownMenu1" data-toggle="dropdown"
+                                                aria-haspopup="true" aria-expanded="false">
+                                            <i class="bi bi-file-person">Propietarios</i>
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Propietario" asp-action="Index">Lista</a>
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Propietario" asp-action="Crear">Crear</a>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="dropdown ml-1 mr-1">
+                                        <button class="btn btn-outline-dark dropdown-toggle"
+                                                type="button" id="dropdownMenu1" data-toggle="dropdown"
+                                                aria-haspopup="true" aria-expanded="false">
+                                            <i class="bi bi-house-fill">Inmuebles</i>
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Inmueble" asp-action="Index">Lista</a>
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Inmueble" asp-action="Crear">Crear</a>
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Inmueble" asp-action="Disponibles" class="btn btn-light">
+                                                Disponibles
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown ml-1 mr-1">
+                                        <button class="btn btn-outline-dark dropdown-toggle"
+                                                type="button" id="dropdownMenu1" data-toggle="dropdown"
+                                                aria-haspopup="true" aria-expanded="false">
+                                            <i class="bi bi-file-person">Inquilinos</i>
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Inquilino" asp-action="Index">Lista</a>
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Inquilino" asp-action="Crear">Crear</a>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="dropdown ml-1 mr-1">
+                                        <button class="btn btn-outline-dark dropdown-toggle"
+                                                type="button" id="dropdownMenu1" data-toggle="dropdown"
+                                                aria-haspopup="true" aria-expanded="false">
+                                            <i class="bi bi-calendar4-range">Contratos</i>
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                            <a class="dropdown-item text-dark" asp-area="" asp-controller="Contrato" asp-action="Index">Lista</a>
+                                            <a class="dropdown-item text-dark" asp-area="" asp-controller="Contrato" asp-action="Crear">Crear</a>
+                                        </div>
+                                    </div>
+                                </ul>
                             </div>
-                        </div>
+                        }
+                        <ul class="navbar-nav text-right">
+                            <li class="nav-item">
 
-                        <div class="dropdown ml-1 mr-1">
-                            <button class="btn btn-outline-dark dropdown-toggle"
-                                    type="button" id="dropdownMenu1" data-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false">
-                                <i class="bi bi-house-fill">Inmuebles</i>
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Inmueble" asp-action="Index">Lista</a>
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Inmueble" asp-action="Crear">Crear</a>
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Inmueble" asp-action="Disponibles" class="btn btn-light">
-                                Disponibles</a>
-                            </div>
-                        </div>
-                        <div class="dropdown ml-1 mr-1">
-                            <button class="btn btn-outline-dark dropdown-toggle"
-                                    type="button" id="dropdownMenu1" data-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false">
-                                <i class="bi bi-file-person">Inquilinos</i>
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Inquilino" asp-action="Index">Lista</a>
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Inquilino" asp-action="Crear">Crear</a>
-
-                            </div>
-                        </div>
-
-                        <div class="dropdown ml-1 mr-1">
-                            <button class="btn btn-outline-dark dropdown-toggle"
-                                    type="button" id="dropdownMenu1" data-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false">
-                                <i class="bi bi-calendar4-range">Contratos</i>
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
-
-                                <a class="dropdown-item text-dark" asp-area="" asp-controller="Contrato" asp-action="Index">Lista</a>
-                                <a class="dropdown-item text-dark" asp-area="" asp-controller="Contrato" asp-action="Crear">Crear</a>
-                            </div>
-                        </div>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+                                @if (!User.Identity.IsAuthenticated)
+                                {
+                                <div class="dropdown ml-1 mr-1">
+                                    <button class="btn btn-outline-dark dropdown-toggle"
+                                            type="button" id="dropdownMenu1" data-toggle="dropdown"
+                                            aria-haspopup="true" aria-expanded="false">
+                                        Iniciar sesión
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Login">Acceder</a>
+                                    </div>
+                                </div>
+                                }
+                                else
+                                {
+                                    <div class="dropdown">
+                                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            @User.Identity.Name
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <hr />
+                                            <a class="dropdown-item text-danger" asp-area="" asp-controller="Usuario" asp-action="Logout"><i class="bi bi-box-arrow-right"></i>Salir</a>
+                                        </div>
+                                    </div>
+                                }
+                            </li>
+                        </ul>
+</div>
+</nav>
     </header>
     <div class="container">
         <div class="">

@@ -9,12 +9,15 @@ namespace Inmobiliaria.Models
 	public enum rol
 	{
 		Empleado = 1,
-		Admin = 2
+		Administrador = 2,
+		SuperAdministrador = 3
 	}
 
 	public class Usuario
 	{
 		[Key]
+		[Display(Name = "Código")]
+		[Required]
 		public int Id { get; set; }
 
 		[Required]
@@ -25,7 +28,7 @@ namespace Inmobiliaria.Models
 		[Required, EmailAddress]
 		public string Email { get; set; }
 
-		[Required, DataType(DataType.Password)]
+		[Required, DataType(DataType.Password), StringLength(16, MinimumLength = 8, ErrorMessage = "La clave debe ser de 8 a 16 caracteres.")]
 		public string Clave { get; set; }
 	
 		public int Rol { get; set; }

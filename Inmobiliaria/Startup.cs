@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Inmobiliaria.Data;
+using Inmobiliaria.Models;
 
 namespace Inmobiliaria
 {
@@ -41,8 +42,14 @@ namespace Inmobiliaria
                 options.AddPolicy("SuperAdministrador", policy => policy.RequireRole("SuperAdministrador"));
             });
 
-            services.AddDbContext<InmobiliariaContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("InmobiliariaContext")));
+            services.AddControllersWithViews();
+
+            services.AddTransient<RepositorioPropietario, RepositorioPropietario>();
+            services.AddTransient<RepositorioInquilino, RepositorioInquilino>();
+            services.AddTransient<RepositorioInmueble, RepositorioInmueble>();
+            services.AddTransient<RepositorioContrato, RepositorioContrato>();
+            services.AddTransient<RepositorioPago, RepositorioPago>();
+            services.AddTransient<RepositorioUsuario, RepositorioUsuario>();
         }
 
 
@@ -63,11 +70,13 @@ namespace Inmobiliaria
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute("login", "iniciar/{**accion}", new { controller = "Usuario", action = "Iniciar" });
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

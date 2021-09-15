@@ -41,7 +41,7 @@ namespace Inmobiliaria.Controllers
         }
 
         // GET: UsuarioController/Create
-        [Authorize(Policy = "Administrador")]
+        //[Authorize(Policy = "Administrador")]
         public ActionResult Crear()
         {
             ViewBag.Roles = Usuario.ObtenerRoles();
@@ -51,11 +51,11 @@ namespace Inmobiliaria.Controllers
         // POST: UsuarioController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Policy = "Administrador")]
+        //[Authorize(Policy = "Administrador")]
         public ActionResult Crear(Usuario ent)
         {
-            if (!ModelState.IsValid)
-                return View();
+            //if (!ModelState.IsValid)
+              //  return View();
             try
             {
                 string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
@@ -194,7 +194,6 @@ namespace Inmobiliaria.Controllers
        
         // GET: UsuarioController/Login/
         [AllowAnonymous]
-        
         public ActionResult Login()
         {
             return View();
@@ -203,38 +202,42 @@ namespace Inmobiliaria.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(string email, string clave)
+        public async Task<ActionResult> Login(LoginView login)
         {
             try
             {
-                Usuario usuario = repositorio.ObtenerPorEmail(email);
-
-                string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                        password: clave,
+                if (ModelState.IsValid)
+                {
+                    string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                        password: login.Clave,
                         salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
                         prf: KeyDerivationPrf.HMACSHA1,
                         iterationCount: 1000,
                         numBytesRequested: 256 / 8));
 
+                    var ent = repositorio.ObtenerPorEmail(login.Usuario);
+                    if (ent == null || ent.Clave != hashed)
+                    {
+                        ModelState.AddModelError("", "El email o la clave no son correctos");
+                        return View();
+                    }
 
-                if (usuario == null || usuario.Clave != hashed)
-                {
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, ent.Email),
+                        new Claim("FullName", ent.Nombre + " " + ent.Apellido),
+                        new Claim(ClaimTypes.Role, ent.RolNombre),
+                    };
 
-                    return View();
+                    var claimsIdentity = new ClaimsIdentity(
+                        claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                    await HttpContext.SignInAsync(
+                        CookieAuthenticationDefaults.AuthenticationScheme,
+                        new ClaimsPrincipal(claimsIdentity));
                 }
 
-                var claims = new List<Claim>
-                    {
-                        new Claim(ClaimTypes.Name, usuario.Email),
-                        new Claim("FullName", usuario.Nombre + " " + usuario.Apellido),
-                        new Claim(ClaimTypes.Role, usuario.RolNombre),
-                    };
-                ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-
-                TempData["Info"] = "Inicio de sesión correcto.";
                 return RedirectToAction("Index", "Home");
-
             }
             catch (Exception ex)
             {
@@ -242,6 +245,7 @@ namespace Inmobiliaria.Controllers
                 return View();
             }
         }
+
 
         // GET: UsuarioController/Perfil
         [Authorize]
@@ -264,9 +268,9 @@ namespace Inmobiliaria.Controllers
         }
 
         [Authorize]
-        [Route("Salir", Name = "Logout")]
+        
         // GET: Usuarios/Logout/
-        public async Task<ActionResult> Salir()
+        public async Task<ActionResult> Logout()
         {
             await HttpContext.SignOutAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme);

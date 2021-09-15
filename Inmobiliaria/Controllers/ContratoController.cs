@@ -133,6 +133,7 @@ namespace Inmobiliaria.Controllers
             ViewBag.Inmueble = repositorioInmueble.ObtenerTodos();
             ViewBag.Garante = repositorioGarante.Obtener();
             ViewBag.FechaInicio = DateTime.Now;
+            ViewBag.FechaCierre = DateTime.Now.AddMonths(24);
             return View();
         }
 

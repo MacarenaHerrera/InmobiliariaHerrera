@@ -1,7 +1,7 @@
 ﻿@model Inmobiliaria.Models.Usuario
 
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Crear";
 }
 
 <h1>Crear</h1>
@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Login">
+        <form asp-action="Crear">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Nombre" class="control-label"></label>
@@ -33,12 +33,17 @@
                 <span asp-validation-for="Clave" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Rol" class="control-label"></label>
-                <input asp-for="Rol" class="form-control" />
+                <label class="control-label">Rol</label>
+                <select class="form-control" name="Rol">
+                    @foreach (var kvp in (IDictionary<int, string>)ViewBag.Roles)
+                    {
+                        <option value="@kvp.Key">@kvp.Value</option>
+                    }
+                </select>
                 <span asp-validation-for="Rol" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Crear" class="btn btn-outline-dark" />
+                <input type="submit" value="Crear" class="btn btn-primary" />
             </div>
         </form>
     </div>

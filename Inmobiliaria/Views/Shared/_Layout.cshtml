@@ -27,7 +27,7 @@
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-light border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand  " asp-area="" asp-controller="Home" asp-action="Index">Inmobiliaria Herrera</a>
-                
+
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -49,10 +49,10 @@
                                             <button class="btn btn-outline-dark dropdown-toggle"
                                                     type="button" id="dropdownMenu1" data-toggle="dropdown"
                                                     aria-haspopup="true" aria-expanded="false">
-                                                Usuarios
+                                                <i class="bi bi-file-person">Usuarios</i>
                                             </button>
                                             <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                                <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Index">Usuarios</a>
+                                                <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Index">Lista</a>
                                                 <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Crear">Crear</a>
                                             </div>
                                         </div>
@@ -117,16 +117,16 @@
 
                                 @if (!User.Identity.IsAuthenticated)
                                 {
-                                <div class="dropdown ml-1 mr-1">
-                                    <button class="btn btn-outline-dark dropdown-toggle"
-                                            type="button" id="dropdownMenu1" data-toggle="dropdown"
-                                            aria-haspopup="true" aria-expanded="false">
-                                        Iniciar sesión
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Login">Acceder</a>
+                                    <div class="dropdown ml-1 mr-1">
+                                        <button class="btn btn-outline-dark dropdown-toggle"
+                                                type="button" id="dropdownMenu1" data-toggle="dropdown"
+                                                aria-haspopup="true" aria-expanded="false">
+                                            Iniciar sesión
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Login">Acceder</a>
+                                        </div>
                                     </div>
-                                </div>
                                 }
                                 else
                                 {
@@ -135,15 +135,14 @@
                                             @User.Identity.Name
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <hr />
                                             <a class="dropdown-item text-danger" asp-area="" asp-controller="Usuario" asp-action="Logout"><i class="bi bi-box-arrow-right"></i>Salir</a>
                                         </div>
                                     </div>
                                 }
                             </li>
                         </ul>
-</div>
-</nav>
+                </div>
+        </nav>
     </header>
     <div class="container">
         <div class="">

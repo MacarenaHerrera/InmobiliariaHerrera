@@ -48,7 +48,7 @@ namespace Inmobiliaria
             services.AddTransient<RepositorioInquilino, RepositorioInquilino>();
             services.AddTransient<RepositorioInmueble, RepositorioInmueble>();
             services.AddTransient<RepositorioContrato, RepositorioContrato>();
-            services.AddTransient<RepositorioPago, RepositorioPago>();
+            //services.AddTransient<RepositorioPago, RepositorioPago>();
             services.AddTransient<RepositorioUsuario, RepositorioUsuario>();
         }
 
@@ -75,7 +75,7 @@ namespace Inmobiliaria
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute("login", "iniciar/{**accion}", new { controller = "Usuario", action = "Iniciar" });
+                endpoints.MapControllerRoute("login", "entrar/{**accion}", new { controller = "Usuarios", action = "Login" });
 
                 endpoints.MapControllerRoute(
                     name: "default",

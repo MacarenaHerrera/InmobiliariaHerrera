@@ -1,4 +1,5 @@
 ﻿using Inmobiliaria.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -25,6 +26,7 @@ namespace Inmobiliaria.Controllers
         }
 
         // GET: Inmueble
+        [Authorize]
         public ActionResult Index()
         {
 
@@ -46,6 +48,7 @@ namespace Inmobiliaria.Controllers
             }
         }
 
+        [Authorize]
         public ActionResult PorPropietario(int id)
         {
             try
@@ -78,6 +81,7 @@ namespace Inmobiliaria.Controllers
         }
 
         // GET: Inmueble/Create
+        [Authorize]
         public ActionResult Crear()
         {
             ViewBag.Propietario = repoPropietario.Obtener();
@@ -88,6 +92,7 @@ namespace Inmobiliaria.Controllers
         // POST: Inmueble/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Crear(Inmueble entidad)
         {
             try
@@ -107,6 +112,7 @@ namespace Inmobiliaria.Controllers
                 return View(entidad);
             }
         }
+        [Authorize]
         public ActionResult Disponibles()
         {
             IList<Inmueble> lista = repositorioInmueble.ObtenerDisponibles();
@@ -114,7 +120,7 @@ namespace Inmobiliaria.Controllers
         }
 
 
-
+        [Authorize]
         // GET: Inmueble/Edit/5
         public ActionResult Editar(int id)
         {
@@ -135,6 +141,7 @@ namespace Inmobiliaria.Controllers
         // POST: Inmueble/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Editar(int id, Inmueble entidad)
         {
             try
@@ -154,6 +161,7 @@ namespace Inmobiliaria.Controllers
         }
 
         // GET: Inmueble/Eliminar/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Eliminar(int id)
         {
             
@@ -170,6 +178,7 @@ namespace Inmobiliaria.Controllers
         // POST: Inmueble/Eliminar/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Eliminar(int id, Inmueble entidad)
         {
             try

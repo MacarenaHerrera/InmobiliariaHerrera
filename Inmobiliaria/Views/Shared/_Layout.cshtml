@@ -19,7 +19,9 @@
      Posibles estilos a aplicar. False porque es opcional. La página que lo necesita, declara la sección.-->
     @RenderSection("Styles", false)
 
-    <title>@ViewData["Title"] - Inmobiliaria Herrera</title>
+
+    <title>@ViewData["Title"] - Inmobiliaria Herrera <p>@DateTime.Today.Year</p></title>
+    
 
 </head>
 <body onload="init()">
@@ -195,7 +197,8 @@
 
             <footer class="border-top footer text-muted">
                 <div class="container">
-                    &copy; 2021 - Inmobiliaria Herrera - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                    
+                        Inmobiliaria Herrera - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                 </div>
             </footer>
             <script src="~/lib/jquery/dist/jquery.min.js"></script>

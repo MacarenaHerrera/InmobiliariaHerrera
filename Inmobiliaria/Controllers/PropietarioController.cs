@@ -1,5 +1,6 @@
 ﻿
 using Inmobiliaria.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +23,7 @@ namespace Inmobiliaria.Controllers
             repositorioPropietario = new RepositorioPropietario(config);
         }
         // GET: PropietarioController
+        [Authorize]
         public ActionResult Index()
         {
             try
@@ -50,6 +52,7 @@ namespace Inmobiliaria.Controllers
         }
 
         // GET: PropietarioController/Create
+        [Authorize]
         public ActionResult Crear()
         {
 
@@ -59,6 +62,7 @@ namespace Inmobiliaria.Controllers
         // POST: PropietarioController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Crear(Propietario propietario)
         {
             try
@@ -76,6 +80,7 @@ namespace Inmobiliaria.Controllers
         }
 
         // GET: PropietarioController/Edit/5
+        [Authorize]
         public ActionResult Editar(int id)
         {
             var prop = repositorioPropietario.obtenerPropietario(id);
@@ -85,6 +90,7 @@ namespace Inmobiliaria.Controllers
         // POST: PropietarioController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Editar(int id, IFormCollection collection)
         {
             try
@@ -110,6 +116,7 @@ namespace Inmobiliaria.Controllers
         }
 
         // GET: PropietarioController/Delete/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Eliminar(int id)
         {
             try
@@ -131,6 +138,7 @@ namespace Inmobiliaria.Controllers
         // POST: PropietarioController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Eliminar(int id, Propietario entidad)
         {
             try 

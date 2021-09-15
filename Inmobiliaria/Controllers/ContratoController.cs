@@ -1,4 +1,5 @@
 ﻿using Inmobiliaria.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -28,6 +29,7 @@ namespace Inmobiliaria.Controllers
         }
 
         // GET: ContratoController
+        [Authorize]
         public ActionResult Index()
         {
             try
@@ -48,7 +50,7 @@ namespace Inmobiliaria.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
-
+        [Authorize]
         public ActionResult PorInmueble(int id)
         {
             List<Contrato> lista = repositorioContrato.ObtenerPorInmueble(id);
@@ -66,8 +68,8 @@ namespace Inmobiliaria.Controllers
             return View(entidad);
         }
 
-       
-        
+
+        [Authorize]
         public ActionResult Renovar(int id)
         {
             try
@@ -95,6 +97,7 @@ namespace Inmobiliaria.Controllers
             }
         }
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public ActionResult Renovar(int id, Contrato contrato)
         {
@@ -123,9 +126,10 @@ namespace Inmobiliaria.Controllers
                 }
 
          }
-        
+
 
         // GET: ContratoController/Crear
+        [Authorize]
         public ActionResult Crear()
         {
             ViewBag.Estados = Contrato.ObtenerEstados();
@@ -140,6 +144,7 @@ namespace Inmobiliaria.Controllers
 
         // POST: ContratoController/Crear
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public ActionResult Crear(Contrato contrato)
         {
@@ -147,12 +152,21 @@ namespace Inmobiliaria.Controllers
                 try
                 {
                 ViewBag.Estados = Contrato.ObtenerEstados();
-                repositorioContrato.Alta(contrato);
+
+                if (contrato.FechaInicio < contrato.FechaCierre)
+                {
+                    repositorioContrato.Alta(contrato);
 
                     var res = contrato.Id;
                     TempData["Id"] = res;
                     TempData["Mensaje"] = $"Contrato creado con éxito! Id: {res}";
                     return RedirectToAction(nameof(Index));
+                } 
+                else 
+                {
+                    TempData["Error"] = $"Fechas inválidas";
+                    return RedirectToAction(nameof(Index));
+                }
                 }
                 catch (Exception e)
                 {
@@ -165,6 +179,7 @@ namespace Inmobiliaria.Controllers
 
 
         // GET: ContratoController/Edit/5
+        [Authorize]
         public ActionResult Editar(int id)
         {
             ViewBag.Estados = Contrato.ObtenerEstados();
@@ -183,6 +198,7 @@ namespace Inmobiliaria.Controllers
         // POST: ContratoController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Editar(int id, Contrato entidad)
         {
             try
@@ -212,6 +228,7 @@ namespace Inmobiliaria.Controllers
         }
 
         // GET: ContratoController/Delete/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Eliminar(int id)
         {
             var entidad = repositorioContrato.ObtenerContrato(id);
@@ -225,15 +242,15 @@ namespace Inmobiliaria.Controllers
         // POST: ContratoController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Eliminar(int id, Contrato entidad)
         {
             try
             {
-                repositorioContrato.Baja(id);
+                repositorioContrato.Baja(id, entidad.InmuebleId);
                 TempData["Mensaje"] = "Eliminación realizada correctamente";
                 return RedirectToAction(nameof(Index));
             }
-
             catch (SqlException e)
             {
                 if (e.Number == 547)

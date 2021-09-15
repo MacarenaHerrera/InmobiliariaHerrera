@@ -27,6 +27,7 @@ namespace Inmobiliaria.Controllers
         }
 
         // GET: Pago
+        [Authorize]
         public ActionResult Index()
         {
             try
@@ -48,7 +49,8 @@ namespace Inmobiliaria.Controllers
         }
 
         // GET: PorContrato
-        
+
+        [Authorize]
         public ActionResult PorContrato(int id)
         {
             
@@ -69,6 +71,7 @@ namespace Inmobiliaria.Controllers
         }
 
         // GET: Pago/Details/5
+        [Authorize]
         public ActionResult Details(int id)
         {
 
@@ -79,6 +82,7 @@ namespace Inmobiliaria.Controllers
         }
 
         // GET: Pago/Crear
+        [Authorize]
         public ActionResult Crear(int id)
         {
            try {
@@ -97,6 +101,7 @@ namespace Inmobiliaria.Controllers
         // POST: Pago/Crear
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Crear(int id, Pago entidad)
         {
             try
@@ -128,6 +133,7 @@ namespace Inmobiliaria.Controllers
         }
 
         // GET: Pago/Edit/5
+        [Authorize]
         public ActionResult Editar(int id)
         {
 
@@ -145,6 +151,7 @@ namespace Inmobiliaria.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Editar(int id, Pago entidad)
         {
             try
@@ -175,6 +182,7 @@ namespace Inmobiliaria.Controllers
         }
 
         // GET: Pago/Delete/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Eliminar(int id)
         {
 
@@ -189,8 +197,9 @@ namespace Inmobiliaria.Controllers
         }
 
         // POST: Pago/Delete/5
-       // [HttpPost, ActionName("Delete")]
+       
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Eliminar(int id, Pago entidad)
         {
             try

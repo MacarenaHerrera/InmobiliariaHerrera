@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -16,18 +17,18 @@ namespace Inmobiliaria.Models
 
     public class Contrato
     {
-        
+
         [Display(Name = "Código")]
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Campo obligatorio"), 
-        Display(Name = "Fecha de inicio"),
-        DataType(DataType.Date)]
+        [Required(ErrorMessage = "Campo obligatorio")]
+        [DisplayName("Fecha Inicio"), DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = false)]
+        [DataType(DataType.Date)]
         public DateTime FechaInicio { get; set; }
 
-        [Required(ErrorMessage = "Campo obligatorio"),
-        Display(Name = "Fecha de cierre"),
-        DataType(DataType.Date)]
+        [Required(ErrorMessage = "Campo obligatorio")]
+        [DisplayName("Fecha Cierre"), DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = false)]
+        [DataType(DataType.Date)]
         public DateTime FechaCierre { get; set; }
 
         [Required(ErrorMessage = "Campo obligatorio")]

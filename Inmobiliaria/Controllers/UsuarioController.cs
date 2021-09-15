@@ -41,7 +41,7 @@ namespace Inmobiliaria.Controllers
         }
 
         // GET: UsuarioController/Create
-        //[Authorize(Policy = "Administrador")]
+        [Authorize(Policy = "SuperAdministrador")]
         public ActionResult Crear()
         {
             ViewBag.Roles = Usuario.ObtenerRoles();
@@ -51,11 +51,11 @@ namespace Inmobiliaria.Controllers
         // POST: UsuarioController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[Authorize(Policy = "Administrador")]
+        [Authorize(Policy = "SuperAdministrador")]
         public ActionResult Crear(Usuario ent)
         {
-            //if (!ModelState.IsValid)
-              //  return View();
+            if (!ModelState.IsValid)
+                return View();
             try
             {
                 string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
@@ -86,7 +86,7 @@ namespace Inmobiliaria.Controllers
         }
 
         // GET: UsuarioController/Edit/5
-        [Authorize(Policy = "Administrador")]
+        [Authorize(Policy = "SuperAdministrador")]
         public ActionResult Editar(int id)
         {
             var ent = repositorio.Obtener(id);
@@ -96,7 +96,7 @@ namespace Inmobiliaria.Controllers
         }
 
         // GET: UsuarioController/EditarPerfil
-        [Authorize]
+        [Authorize(Policy = "SuperAdministrador")]
         public ActionResult EditarPerfil()
         {
             var ent = repositorio.ObtenerPorEmail(User.Identity.Name);
@@ -107,7 +107,7 @@ namespace Inmobiliaria.Controllers
         // POST: UsuarioController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize]
+        [Authorize(Policy = "SuperAdministrador")]
         public ActionResult Editar(int id, Usuario ent)
         {
             try
@@ -156,7 +156,7 @@ namespace Inmobiliaria.Controllers
         }
 
         // GET: UsuarioController/Delete/5
-        [Authorize(Policy = "Administrador")]
+        [Authorize(Policy = "SuperAdministrador")]
         public ActionResult Baja(int id)
         {
             var ent = repositorio.Obtener(id);
@@ -167,7 +167,7 @@ namespace Inmobiliaria.Controllers
         // POST: UsuarioController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Policy = "Administrador")]
+        [Authorize(Policy = "SuperAdministrador")]
         public ActionResult Baja(int id, Usuario ent)
         {
             try
@@ -248,7 +248,7 @@ namespace Inmobiliaria.Controllers
 
 
         // GET: UsuarioController/Perfil
-        [Authorize]
+        [Authorize(Policy = "SuperAdministrador")]
         public ActionResult Perfil()
         {
             var ent = repositorio.ObtenerPorEmail(User.Identity.Name);

@@ -230,7 +230,7 @@ namespace Inmobiliaria.Models
 
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
-					command.Parameters.Add("@idPropietario", SqlDbType.Int).Value = idPropietario;
+					command.Parameters.Add("@propietarioId", SqlDbType.Int).Value = idPropietario;
 					command.CommandType = CommandType.Text;
 					connection.Open();
 					var reader = command.ExecuteReader();

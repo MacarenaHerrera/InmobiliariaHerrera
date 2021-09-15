@@ -77,8 +77,9 @@ namespace Inmobiliaria.Models
             int res = -1;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"INSERT INTO Contratos(FechaInicio, FechaCierre, Estado, InmuebleId, InquilinoId, Precio, GaranteId) " +
+                string sql = $" INSERT INTO Contratos(FechaInicio, FechaCierre, Estado, InmuebleId, InquilinoId, Precio, GaranteId) " +
                 "VALUES (@fechaInicio, @fechaCierre, @estado, @inmuebleId, @inquilinoId, @precio, @garanteId);" +
+                "UPDATE Inmuebles SET Inmuebles.Disponible = 0 WHERE Inmuebles.Id = @inmuebleId;" +
                 "SELECT SCOPE_IDENTITY();";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
@@ -276,16 +277,19 @@ namespace Inmobiliaria.Models
             return lista;
         }
 
-        public int Baja(int id)
+        public int Baja(int id, int inmuebleId)
         {
             int res = -1;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"DELETE FROM Contratos WHERE Id = @id";
+                string sql = $"DELETE FROM Contratos WHERE Id = @id;" +
+                "UPDATE Inmuebles SET Inmuebles.Disponible = 1 WHERE Inmuebles.Id = @inmuebleId;";
+
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@inmuebleId", inmuebleId);
                     connection.Open();
                     res = command.ExecuteNonQuery();
                     connection.Close();

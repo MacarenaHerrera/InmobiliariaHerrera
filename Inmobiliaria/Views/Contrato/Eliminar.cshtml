@@ -23,17 +23,11 @@
             @Html.DisplayFor(model => model.FechaInicio)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Estado)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Estado)
-        </dd>
-
-        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.InmuebleId)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.InmuebleId)
+            @Html.DisplayFor(model => model.Inmueble.Direccion)
         </dd>
 
         <dt class="col-sm-2">
@@ -41,6 +35,8 @@
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.InquilinoId)
+            @Html.DisplayFor(model => model.Inquilino.Apellido)
+            @Html.DisplayFor(model => model.Inquilino.Nombre)
         </dd>
     </dl>
 

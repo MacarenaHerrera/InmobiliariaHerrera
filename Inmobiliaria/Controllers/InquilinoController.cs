@@ -1,4 +1,5 @@
 ﻿using Inmobiliaria.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,8 +21,9 @@ namespace Inmobiliaria.Controllers
                 this.config = config;
                 repositorioInquilino = new RepositorioInquilino(config);   
             }
-           
-            public ActionResult Index()
+
+        [Authorize]
+        public ActionResult Index()
             {
             try
             {
@@ -44,15 +46,17 @@ namespace Inmobiliaria.Controllers
                 return View();
             }
 
-            // GET: InquilinoController/Create
-            public ActionResult Crear()
+        // GET: InquilinoController/Create
+        [Authorize]
+        public ActionResult Crear()
             {
                 return View();
             }
 
             [HttpPost]
             [ValidateAntiForgeryToken]
-            public ActionResult Crear(Inquilino inquilino)
+        [Authorize]
+        public ActionResult Crear(Inquilino inquilino)
             {
                 try
                 {
@@ -69,7 +73,8 @@ namespace Inmobiliaria.Controllers
             }
         }
 
-            public ActionResult Editar(int id)
+        [Authorize]
+        public ActionResult Editar(int id)
             {
                 var inquilino = repositorioInquilino.ObtenerInquilino(id);
                 return View(inquilino);
@@ -77,7 +82,8 @@ namespace Inmobiliaria.Controllers
 
             [HttpPost]
             [ValidateAntiForgeryToken]
-            public ActionResult Editar(int id, IFormCollection collection)
+        [Authorize]
+        public ActionResult Editar(int id, IFormCollection collection)
             {
                 try
                 {
@@ -101,7 +107,8 @@ namespace Inmobiliaria.Controllers
                 }
             }
 
-            public ActionResult Eliminar(int id)
+        [Authorize(Policy = "Administrador")]
+        public ActionResult Eliminar(int id)
             {
             try
             {
@@ -122,7 +129,8 @@ namespace Inmobiliaria.Controllers
 
             [HttpPost]
             [ValidateAntiForgeryToken]
-            public ActionResult Eliminar(int id, Inquilino entidad)
+        [Authorize(Policy = "Administrador")]
+        public ActionResult Eliminar(int id, Inquilino entidad)
             {
             try
             {

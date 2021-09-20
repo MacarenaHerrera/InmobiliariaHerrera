@@ -3,21 +3,22 @@
 @{
     ViewData["Title"] = "Crear";
     DateTime? fechaInicio = ViewBag.FechaInicio;
-    DateTime? fechaFinal = ViewBag.FechaFinal;
+    //DateTime? fechaFinal = ViewBag.FechaFinal;
 
     List<Inquilino> inquilinos = ViewBag.Inquilinos;
-    List<Inmueble> inmuebles = ViewBag.Inmuebles;
+    Inmueble inmueble = ViewBag.Inmueble;
     List<Garante> garantes = ViewBag.Garantes;
+    List<Inmueble> inmuebles = ViewBag.Inmuebles;
 
-    
+    //decimal precio = inmueble.Precio;
+
 }
 <h1>Crear</h1>
-
-<h4>Contrato</h4>
+<h4>Contrato para @(inmueble.Direccion)</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Crear">
+        <form asp-action="CrearPara">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-group">
@@ -27,7 +28,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="FechaCierre" class="control-label"></label>
-                <input asp-for="FechaCierre" class="form-control" type="date" value="@(fechaInicio.HasValue ? fechaInicio.Value.ToString("yyyy-MM-dd") : "")" />
+                <input asp-for="FechaCierre" class="form-control" type="date"/>
                 <span asp-validation-for="FechaCierre" class="text-danger"></span>
             </div>
             <div class="form-group" hidden>
@@ -35,17 +36,18 @@
                 <input asp-for="Estado" class="form-control" />
                 <span asp-validation-for="Estado" class="text-danger"></span>
             </div>
+            
             <div class="form-group">
                 <label class="control-label">Inmueble</label>
-                <select class="form-control" name="InmuebleId">
-                    @foreach (Inmueble item in inmuebles)
+                <select class="form-control" name="InmuebleId" disabled>
+                    @foreach (var item in (List<Inmueble>)ViewBag.Inmuebles)
                     {
-                        <option value="@item.Id">@(item.Direccion + " - " + item.TipoInmueble)</option>
+                        @:<option @(item.Id == inmueble.Id ? "selected" : "") value="@item.Id">@(item.Direccion)</option>
                     }
                 </select>
                 <span asp-validation-for="InmuebleId" class="text-danger"></span>
-
             </div>
+           
             <div class="form-group">
                 <label class="control-label">Inquilino</label>
                 <select class="form-control" name="InquilinoId">
@@ -74,7 +76,6 @@
             </div>
             <div class="form-group">
                 <input type="submit" value="Crear" class="btn btn-primary" />
-
             </div>
         </form>
     </div>

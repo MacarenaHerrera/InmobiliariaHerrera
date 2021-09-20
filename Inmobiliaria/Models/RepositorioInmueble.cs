@@ -68,7 +68,7 @@ namespace Inmobiliaria.Models
 			{
 				string sql = "UPDATE Inmuebles SET " +
 					"Direccion=@direccion, Ambientes=@ambientes, Superficie=@superficie, PropietarioId=@propietarioId, Tipo=@tipo, Precio=@precio, Disponible=@disponible " +
-					"WHERE Id = @id";
+					"WHERE Id = @id;";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
 					command.CommandType = CommandType.Text;
@@ -98,8 +98,8 @@ namespace Inmobiliaria.Models
 			{
 				
 				string sql = "SELECT i.Id, Direccion, Ambientes, Superficie, PropietarioId, Tipo, i.Precio, Disponible, " +
-					"p.Nombre, p.Apellido" +
-					" FROM Inmuebles i INNER JOIN Propietarios p ON i.PropietarioId = p.Id ";
+					"p.Nombre, p.Apellido " +
+					"FROM Inmuebles i INNER JOIN Propietarios p ON i.PropietarioId = p.Id;";
 
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
@@ -142,8 +142,8 @@ namespace Inmobiliaria.Models
 			{
 				string sql = $"SELECT i.Id, Direccion, Ambientes, Superficie, PropietarioId, Tipo, " +
 					$"i.Precio, Disponible, p.Nombre, p.Apellido " +
-					$"FROM Inmuebles i INNER JOIN Propietarios p ON i.PropietarioId = p.Id" +
-					$" WHERE i.Id=@id";
+					$"FROM Inmuebles i INNER JOIN Propietarios p ON i.PropietarioId = p.Id " +
+					$"WHERE i.Id=@id";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
 					command.Parameters.Add("@id", SqlDbType.Int).Value = id;
@@ -183,9 +183,9 @@ namespace Inmobiliaria.Models
 
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"SELECT i.Id, Direccion, Ambientes, Superficie, PropietarioId, Tipo, i.Precio, Disponible, p.Nombre, p.Apellido" +
-					$" FROM Inmuebles i INNER JOIN Propietarios p ON i.PropietarioId = p.Id" +					
-					$" WHERE i.Disponible = 1;";
+				string sql = $"SELECT i.Id, Direccion, Ambientes, Superficie, PropietarioId, Tipo, i.Precio, Disponible, p.Nombre, p.Apellido " +
+					$"FROM Inmuebles i INNER JOIN Propietarios p ON i.PropietarioId = p.Id " +					
+					$"WHERE i.Disponible = 1;";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
 					connection.Open();
@@ -233,10 +233,10 @@ namespace Inmobiliaria.Models
 						$"(SELECT {nameof(Contrato.InmuebleId)} FROM Contratos " +
 						$"WHERE (@fi >= FechaInicio AND @fi < FechaCierre) " +
 						$"OR (@ff > FechaInicio AND @ff <= FechaCierre) " +
-						$"OR (@fi <= FechaInicio AND @ff >= FechaCierre)); ";
+						$"OR (@fi <= FechaInicio AND @ff >= FechaCierre))";
 
 				if (IdInm > 0)
-					sql += $"AND i.{nameof(Inmueble.Id)} = @IdInm ";
+					sql += $" AND i.{nameof(Inmueble.Id)} = @IdInm;";
 
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{

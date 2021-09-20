@@ -75,7 +75,7 @@ namespace Inmobiliaria.Controllers
         public ActionResult Vigentes()
         {
             IList<Contrato> lista = repositorioContrato.ObtenerVigentes();
-            //ViewBag.Cancelar = true;
+            ViewBag.Cancelar = true;
             return View(lista);
         }
 
@@ -207,20 +207,52 @@ namespace Inmobiliaria.Controllers
         {
             try
             {
-             ViewBag.Inquilinos = repositorioInquilino.Obtener();
-            ViewBag.Inmuebles = repositorioInmueble.ObtenerTodos();
+            ViewBag.Inquilinos = repositorioInquilino.Obtener();
             ViewBag.Garantes = repositorioGarante.Obtener();
+            ViewBag.Inmuebles = repositorioInmueble.ObtenerTodos();
+            
+           ViewBag.Inmueble = repositorioInmueble.ObtenerPorId(id);
 
             ViewBag.FechaInicio = TempData.ContainsKey("FechaInicio") ? TempData["FechaInicio"] : DateTime.Now;
-            ViewBag.FechaFinal = TempData.ContainsKey("FechaFinal") ? TempData["FechaFinal"] : DateTime.Now.AddMonths(24);
-            ViewBag.paraIdInmueble = id;
-            return View(nameof(Crear));
+            //ViewBag.FechaFinal = TempData.ContainsKey("FechaFinal") ? TempData["FechaFinal"] : DateTime.Now.AddMonths(24);
+
+                return View();
             }
             catch (Exception e)
             {
                 ViewBag.Error = e.Message;
                 ViewBag.StackTrate = e.StackTrace;
-                return View();
+                return View(nameof(Index));
+            }
+        }
+
+        // POST: ContratoController/Crear
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public ActionResult CrearPara(Contrato ent)
+        {
+
+            try
+            {
+                //ViewBag.Estados = Contrato.ObtenerEstados();
+
+                if (repositorioInmueble.ObtenerDisponiblesEntreFechas(ent.FechaInicio, ent.FechaCierre, ent.InmuebleId).Count() == 0)
+                    ViewBag.Error = "El inmueble seleccionado no se encuentra disponible en las fechas indicadas.";
+
+                repositorioContrato.Alta(ent);
+
+                var res = ent.Id;
+                TempData["Id"] = res;
+                TempData["Mensaje"] = $"Contrato creado con éxito! Id: {res}";
+                return RedirectToAction(nameof(Index));
+
+            }
+            catch (Exception e)
+            {
+                ViewBag.Error = e.Message;
+                ViewBag.StackTrate = e.StackTrace;
+                return View(ent);
             }
         }
 
@@ -231,14 +263,13 @@ namespace Inmobiliaria.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Crear(Contrato ent)
         {
-
                     
             try
                 {
                 //ViewBag.Estados = Contrato.ObtenerEstados();
 
                 if (repositorioInmueble.ObtenerDisponiblesEntreFechas(ent.FechaInicio, ent.FechaCierre, ent.InmuebleId).Count() == 0)
-                    ViewBag.Error = "El inmueble seleccionado no se encuentra disponible en las fechas indicadas.";
+                    TempData["Error"] = "El inmueble seleccionado no se encuentra disponible en las fechas indicadas.";
                
                 repositorioContrato.Alta(ent);
 
@@ -285,11 +316,11 @@ namespace Inmobiliaria.Controllers
             {
 
                 if (repositorioInmueble.ObtenerDisponiblesEntreFechas(ent.FechaInicio, ent.FechaCierre, ent.InmuebleId).Count() == 0)
-                    throw new Exception("El inmueble seleccionado no se encuentra disponible en las fechas indicadas.");
-                    ent.Id = id;
+                    TempData["Error"] = "El inmueble seleccionado no se encuentra disponible en las fechas indicadas.";
+                    
                     repositorioContrato.Modificar(ent);
-                    TempData["Mensaje"] = "Datos guardados correctamente";
-                    return RedirectToAction(nameof(Index));
+                TempData["Mensaje"] = "Contrato modificado con éxito!";
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {

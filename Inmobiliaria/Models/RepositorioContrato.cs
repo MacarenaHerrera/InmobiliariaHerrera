@@ -160,9 +160,8 @@ namespace Inmobiliaria.Models
             int res = -1;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $" INSERT INTO Contratos(FechaInicio, FechaCierre, Estado, InmuebleId, InquilinoId, Precio, GaranteId) " +
+                string sql = $"INSERT INTO Contratos(FechaInicio, FechaCierre, Estado, InmuebleId, InquilinoId, Precio, GaranteId) " +
                 "VALUES (@fechaInicio, @fechaCierre, @estado, @inmuebleId, @inquilinoId, @precio, @garanteId);" +
-                
                 "SELECT SCOPE_IDENTITY();";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
@@ -310,7 +309,7 @@ namespace Inmobiliaria.Models
                 string sql = $"SELECT c.{nameof(Contrato.Id)}, {nameof(Contrato.FechaInicio)}, {nameof(Contrato.FechaCierre)}, " +
                     $"{nameof(Contrato.Estado)}, {nameof(Contrato.InmuebleId)}, {nameof(Contrato.InquilinoId)}, c.{nameof(Contrato.Precio)}, c.{nameof(Contrato.GaranteId)}, " +
                     $"inm.{nameof(Contrato.Inmueble.Direccion)}, " +
-                    $"i.{nameof(Contrato.Inquilino.Nombre)}, i.{nameof(Contrato.Inquilino.Apellido)},  " +
+                    $"i.{nameof(Contrato.Inquilino.Nombre)}, i.{nameof(Contrato.Inquilino.Apellido)}, " +
                     $"g.{nameof(Contrato.Garante.Nombre)} " +
                     $"FROM Contratos c " +
                     $"INNER JOIN Inquilinos i ON c.InquilinoId = i.Id " +

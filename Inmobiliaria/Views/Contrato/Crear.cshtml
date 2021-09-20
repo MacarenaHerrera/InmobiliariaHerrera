@@ -2,8 +2,22 @@
 
 @{
     ViewData["Title"] = "Crear";
-    DateTime inicio = (DateTime)ViewBag.FechaInicio;
-    DateTime cierre = (DateTime)ViewBag.FechaCierre;
+    DateTime? fechaInicio = ViewBag.FechaInicio;
+    DateTime? fechaFinal = ViewBag.FechaFinal;
+
+    int paraIdInmueble = ViewBag.paraIdInmueble ?? 0;
+    List<Inquilino> inquilinos = ViewBag.Inquilinos;
+    List<Inmueble> inmuebles = ViewBag.Inmuebles;
+    List<Garante> garantes = ViewBag.Garantes;
+    decimal precio = 0;
+
+    if (paraIdInmueble > 0)
+    {
+        foreach (Inmueble inmueble in inmuebles)
+        {
+            if (inmueble.Id == paraIdInmueble) precio = inmueble.Precio;
+        }
+    }
 }
 <h1>Crear</h1>
 
@@ -16,30 +30,25 @@
 
             <div class="form-group">
                 <label asp-for="FechaInicio" class="control-label"></label>
-                <input asp-for="FechaInicio" class="form-control"/>
+                <input asp-for="FechaInicio" class="form-control" type="date" value="@(fechaInicio.HasValue ? fechaInicio.Value.ToString("yyyy-MM-dd") : "")"/>
                 <span asp-validation-for="FechaInicio" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="FechaCierre" class="control-label"></label>
-                <input asp-for="FechaCierre" class="form-control"/>
+                <input asp-for="FechaCierre" class="form-control" type="date" value="@(fechaInicio.HasValue ? fechaInicio.Value.ToString("yyyy-MM-dd") : "")"/>
                 <span asp-validation-for="FechaCierre" class="text-danger"></span>
             </div>
             <div class="form-group" hidden>
                 <label asp-for="Estado" class="control-label"></label>
-                <select class="form-control" name="Estado">
-                    @foreach (var kvp in (IDictionary<int, string>)ViewBag.Estados)
-                    {
-                        <option value="@kvp.Key">@kvp.Value</option>
-                    }
-                </select>
+                <input asp-for="Estado" class="form-control" />
                 <span asp-validation-for="Estado" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label class="control-label">Inmueble</label>
-                <select class="form-control" name="InmuebleId">
-                    @foreach (var item in (List<Inmueble>)ViewBag.Inmueble)
+                <select class="form-control" name="InmuebleId" disabled>
+                    @foreach (var item in inmuebles)
                     {
-                        <option value="@item.Id">@(item.Direccion + " - " + item.TipoInmueble)</option>
+                        @:<option @(paraIdInmueble == item.Id ? "selected" : "") value="@item.Id">@(item.Direccion + " - " + item.TipoInmueble)</option>
                     }
                 </select>
                 <span asp-validation-for="InmuebleId" class="text-danger"></span>
@@ -48,7 +57,7 @@
             <div class="form-group">
                 <label class="control-label">Inquilino</label>
                 <select class="form-control" name="InquilinoId">
-                    @foreach (var item in (List<Inquilino>)ViewBag.Inquilino)
+                    @foreach (var item in inquilinos)
                     {
                         <option value="@item.Id">@(item.Nombre + " " + item.Apellido)</option>
                     }
@@ -64,14 +73,12 @@
             <div class="form-group">
                 <label class="control-label">Garante</label>
                 <select class="form-control" name="GaranteId">
-                    @foreach (var item in (List<Garante>)ViewBag.Garante)
+                    @foreach (var item in garantes)
                     {
                         <option value="@item.Id">@(item.Nombre + " - " + item.Dni)</option>
                     }
                 </select>
                 <span asp-validation-for="GaranteId" class="text-danger"></span>
-
-                <a asp-controller="Garante" asp-action="Crear">Crear nuevo garante</a>
             </div>
             <div class="form-group">
                 <input type="submit" value="Crear" class="btn btn-primary" />

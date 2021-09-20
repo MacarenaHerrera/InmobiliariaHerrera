@@ -18,7 +18,7 @@ namespace Inmobiliaria.Models
         public string Nombre { get; set; }
 
         [Required(ErrorMessage = "Campo obligatorio"),
-            MinLength(8, ErrorMessage = "Un DNI debe tener mínimo 8 dígitos")]
+            MinLength(8, ErrorMessage = "Un DNI debe tener dígitos")]
         public string Dni { get; set; }
 
         [Required(ErrorMessage = "Campo obligatorio"),

@@ -11,8 +11,7 @@ namespace Inmobiliaria.Models
     public enum estadoContrato
     {
         Vigente = 1,
-        Vencido = 2,
-        Cancelado = 3
+        Cancelado = 2
     }
 
     public class Contrato
@@ -63,7 +62,7 @@ namespace Inmobiliaria.Models
         [Display(Name = "Garante")]
         public Garante Garante { get; set; }
 
-        public string TipoNombre => Estado > 0 ? ((estadoContrato)Estado).ToString() : "";
+        public string EstadoNombre => Estado > 0 ? ((estadoContrato)Estado).ToString() : "";
 
         public static IDictionary<int, string> ObtenerEstados()
         {
@@ -79,7 +78,11 @@ namespace Inmobiliaria.Models
         [Display(Name = "Multa Cancelación")]
         [DataType(DataType.Currency)]
         public decimal CalcularMulta() => FechaCierre.Subtract(DateTime.Now).TotalDays < (FechaCierre.Subtract(FechaInicio).TotalDays / 2) ? Precio : (Precio * 2);
-     
 
+        public int CalcularMeses() => (int)DateTime.Now.Subtract(FechaInicio).TotalDays / 30;
+
+        [DisplayName("Vigente")]
+        public bool EsVigente => (DateTime.Now <= FechaCierre && FechaInicio <= DateTime.Now);
+        
     }
 }

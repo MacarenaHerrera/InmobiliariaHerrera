@@ -1,13 +1,13 @@
-﻿@model IEnumerable<Inmobiliaria.Models.Inmueble>
+﻿@model IEnumerable<Inmobiliaria.Models.Garante>
 
 @{
-    ViewData["Title"] = "Inmuebles";
-    List<Inmueble> inmuebles = ViewData[nameof(Inmueble)] as List<Inmueble>;
+    ViewData["Title"] = "Garantes";
+    List<Garante> garantes = ViewData[nameof(Garante)] as List<Garante>;
     string mensaje = TempData["Mensaje"] + "";
     string error = TempData["Error"] + "";
 }
 
-<h1>INMUEBLES</h1>
+<h1><i class="bi bi-file-person-fill"> </i>GARANTES</h1>
 @if (mensaje.Length != 0)
 {
     <div class="alert alert-dismissible alert-success">
@@ -34,61 +34,33 @@
                 @Html.DisplayNameFor(model => model.Id)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Direccion)
+                @Html.DisplayNameFor(model => model.Nombre)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Ambientes)
+                @Html.DisplayNameFor(model => model.Dni)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Superficie)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PropietarioId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TipoInmueble)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Precio)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Disponible)
+                @Html.DisplayNameFor(model => model.Telefono)
             </th>
             <th></th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in garantes)
         {
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.Id)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Direccion)
+                    @Html.DisplayFor(modelItem => item.Nombre)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Ambientes)
+                    @Html.DisplayFor(modelItem => item.Dni)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Superficie)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PropietarioId)
-                    @(item.Duenio.Nombre + " " + item.Duenio.Apellido)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TipoInmueble)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Precio)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Disponible)
-                </td>
-                <td>
-                    <a asp-controller="Contrato" asp-action="PorInmueble" asp-route-id="@item.Id">Contratos<i class="bi bi-calendar4-range"></i></a>
+                    @Html.DisplayFor(modelItem => item.Telefono)
                 </td>
                 <td>
                     @if (User.IsInRole("Administrador") || User.IsInRole("Empleado"))
@@ -108,9 +80,9 @@
                             </svg>
                         </a>
                     }
+
                 </td>
             </tr>
         }
     </tbody>
-
 </table>

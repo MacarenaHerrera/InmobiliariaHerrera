@@ -49,6 +49,40 @@ namespace Inmobiliaria.Controllers
         }
 
         [Authorize]
+        public ActionResult Disponibles()
+        {
+            IList<Inmueble> lista = repositorioInmueble.ObtenerDisponibles();
+            return View(lista);
+        }
+
+        // GET: InmuebleController
+        [HttpPost]
+        [Authorize]
+        public ActionResult Disponibles(FechasView f)
+        {
+            try {
+                IList<Inmueble> lista = repositorioInmueble.ObtenerDisponiblesEntreFechas(f.FechaInicio, f.FechaCierre);
+                ViewBag.Fechas = f;
+                TempData["FechaInicio"] = f.FechaInicio;
+                TempData["FechaCierre"] = f.FechaCierre;
+
+                return View(lista);
+            }
+            catch (Exception ex)
+            {
+
+                Json(new { Error = ex.Message });
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        [Authorize]
+        public ActionResult Fechas()
+        {
+            return View();
+        }
+
+        [Authorize]
         public ActionResult PorPropietario(int id)
         {
             try
@@ -112,13 +146,6 @@ namespace Inmobiliaria.Controllers
                 return View(entidad);
             }
         }
-        [Authorize]
-        public ActionResult Disponibles()
-        {
-            IList<Inmueble> lista = repositorioInmueble.ObtenerDisponibles();
-            return View(lista);
-        }
-
 
         [Authorize]
         // GET: Inmueble/Edit/5

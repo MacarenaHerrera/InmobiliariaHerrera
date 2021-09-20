@@ -15,12 +15,12 @@ namespace Inmobiliaria.Models
 
         [Required(ErrorMessage = "Campo obligatorio"),
              MaxLength(50, ErrorMessage = "Máximo 50 caracteres"),
-            StringLength(8, MinimumLength = 4, ErrorMessage = "El nombre debe ser de 4 caracteres minimamente")]
+             MinLength(4, ErrorMessage = "El nombre debe ser de 4 caracteres minimamente")]
         public string Nombre { get; set; }
 
         [Required(ErrorMessage = "Campo obligatorio"),
            MaxLength(50, ErrorMessage = "Máximo 50 caracteres"),
-            StringLength(8, MinimumLength = 4, ErrorMessage = "El apellido debe ser de 4 caracteres minimamente")]
+             MinLength(4, ErrorMessage = "El apellido debe ser de 4 caracteres minimamente")]
         public string Apellido { get; set; }
 
         [Required(ErrorMessage = "Campo obligatorio"),

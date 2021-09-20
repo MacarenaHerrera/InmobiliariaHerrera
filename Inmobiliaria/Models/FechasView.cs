@@ -17,14 +17,5 @@ namespace Inmobiliaria.Models
         [DisplayName("Fecha Cierre"), DisplayFormat(DataFormatString = "{dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         [DataType(DataType.Date)]
         public DateTime FechaCierre { get; set; }
-
-        public String Hoy(){
-            DateTime fecha = DateTime.Now;
-            int anio = fecha.Year;
-            int mes = fecha.Month;
-            int dia = fecha.Day;
-            String fechaHoy = (anio / mes / dia).ToString();
-            return fechaHoy;
-        }
         }
 }

@@ -12,9 +12,8 @@ namespace Inmobiliaria.Models
         [Display(Name = "Código")]
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Campo obligatorio"),
-        Display(Name = "Fecha"),
-        DataType(DataType.Date)]
+        [Required, DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = false)]
+        [DataType(DataType.Date)]
         public DateTime Fecha { get; set; }
 
         [Required(ErrorMessage = "Campo obligatorio")]
@@ -29,7 +28,25 @@ namespace Inmobiliaria.Models
         public Contrato Contrato { get; set; }
 
         [Display(Name = "Número de Pago")]
-        public int NumeroPago => 1 + Fecha.Month - (Contrato != null ? Contrato.FechaInicio.Month : Fecha.Month) +
-            (Fecha.Year - (Contrato != null ? Contrato.FechaInicio.Year : Fecha.Year)) * 12;
+        public int NumeroPago { get; set; }
+
+        public int ObtenerPago() {
+
+            if (Fecha.Month < Contrato.FechaInicio.Month)
+            {
+                int num = 1 + (Fecha.Year - Contrato.FechaInicio.Year) * 12 +
+                   (-1 * (Fecha.Month - Contrato.FechaInicio.Month));
+                return num;
+            }
+            else
+                
+            {
+                int num = 1 + (Fecha.Year - Contrato.FechaInicio.Year) * 12 +
+                   (Fecha.Month - Contrato.FechaInicio.Month);
+                return num;
+
+            }
+        }
     }
 }
+

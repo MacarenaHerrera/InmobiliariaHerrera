@@ -20,7 +20,7 @@
     @RenderSection("Styles", false)
 
 
-    <title>@ViewData["Title"] - Inmobiliaria Herrera <p>@DateTime.Today.Year</p></title>
+    <title>@ViewData["Title"] - Inmobiliaria Herrera @DateTime.Today.Year</title>
     
 
 </head>
@@ -44,7 +44,7 @@
                             </button>
                             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                                 <ul class="navbar-nav flex-grow-1">
-                                    @if (User.IsInRole("Administrador") || User.IsInRole("SuperAdministrador"))
+                                    @if (User.IsInRole("Administrador"))
                                     {
 
                                         <div class="dropdown ml-1 mr-1">
@@ -55,11 +55,11 @@
                                             </button>
                                             <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
                                                 <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Index">Lista</a>
-                                                <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Crear">Crear</a>
+                                                    <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Crear">Crear</a>
                                             </div>
                                         </div>
-
                                     }
+
                                     <div class="dropdown ml-1 mr-1">
                                         <button class="btn btn-outline-dark dropdown-toggle"
                                                 type="button" id="dropdownMenu1" data-toggle="dropdown"
@@ -68,9 +68,11 @@
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
                                             <a class="nav-link text-dark" asp-area="" asp-controller="Propietario" asp-action="Index">Lista</a>
-                                            <a class="nav-link text-dark" asp-area="" asp-controller="Propietario" asp-action="Crear">Crear</a>
-
-                                        </div>
+                                            @if (User.IsInRole("Administrador") || User.IsInRole("Empleado"))
+                                            {
+                                                <a class="nav-link text-dark" asp-area="" asp-controller="Propietario" asp-action="Crear">Crear</a>
+                                            }
+                                            </div>
                                     </div>
 
                                     <div class="dropdown ml-1 mr-1">
@@ -81,10 +83,15 @@
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
                                             <a class="nav-link text-dark" asp-area="" asp-controller="Inmueble" asp-action="Index">Lista</a>
-                                            <a class="nav-link text-dark" asp-area="" asp-controller="Inmueble" asp-action="Crear">Crear</a>
+                                            @if (User.IsInRole("Administrador") || User.IsInRole("Empleado") || User.IsInRole("Propietario"))
+                                            {
+                                                <a class="nav-link text-dark" asp-area="" asp-controller="Inmueble" asp-action="Crear">Crear</a>
+                                            }
+
                                             <a class="nav-link text-dark" asp-area="" asp-controller="Inmueble" asp-action="Disponibles" class="btn btn-light">
                                                 Disponibles
                                             </a>
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Inmueble" asp-action="Fechas">Disp. entre Fechas</a>
                                         </div>
                                     </div>
                                     <div class="dropdown ml-1 mr-1">
@@ -95,7 +102,12 @@
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
                                             <a class="nav-link text-dark" asp-area="" asp-controller="Inquilino" asp-action="Index">Lista</a>
+
+                                            @if (User.IsInRole("Administrador") || User.IsInRole("Empleado"))
+                                            {
                                             <a class="nav-link text-dark" asp-area="" asp-controller="Inquilino" asp-action="Crear">Crear</a>
+                                            }
+                                            
 
                                         </div>
                                     </div>
@@ -108,7 +120,22 @@
                                         </button>
                                         <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
                                             <a class="dropdown-item text-dark" asp-area="" asp-controller="Contrato" asp-action="Index">Lista</a>
-                                            <a class="dropdown-item text-dark" asp-area="" asp-controller="Contrato" asp-action="Crear">Crear</a>
+                                            <a class="dropdown-item text-dark" asp-area="" asp-controller="Contrato" asp-action="Vigentes">Vigentes</a>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown ml-1 mr-1">
+                                        <button class="btn btn-outline-dark dropdown-toggle"
+                                                type="button" id="dropdownMenu1" data-toggle="dropdown"
+                                                aria-haspopup="true" aria-expanded="false">
+                                            <i class="bi bi-file-person">Garantes</i>
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                            <a class="dropdown-item text-dark" asp-area="" asp-controller="Garante" asp-action="Index">Lista</a>
+
+                                            @if (User.IsInRole("Administrador") || User.IsInRole("Empleado"))
+                                            {
+                                            <a class="dropdown-item text-dark" asp-area="" asp-controller="Garante" asp-action="Crear">Crear</a>
+                                            }
                                         </div>
                                     </div>
                                 </ul>
@@ -148,48 +175,7 @@
     </header>
     <div class="container">
         <div class="">
-            @if (ViewBag.Id != null)
-            {//alta exitosa
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <strong>¡Éxito!</strong> La entidad fue dada de alta con nº de código: @ViewBag.Id
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true"><span class="lnr lnr-cross-circle"></span></span>
-                    </button>
-                </div>
-            }
-            else if (ViewBag.Mensaje != null)
-            {//cartel general
-                <div class="alert alert-info alert-dismissible fade show" role="alert">
-                    <strong>Información:</strong> @ViewBag.Mensaje
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true"><span class="lnr lnr-cross-circle"></span></span>
-                    </button>
-                </div>
-            }
-            else if (ViewBag.Error != null)
-            {//alta exitosa
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>¡Error!</strong> @ViewBag.Error
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true"><span class="lnr lnr-cross-circle"></span></span>
-                    </button>
-                </div>
-            }
-            else if (!String.IsNullOrWhiteSpace(ViewBag.Error))
-            {//ocurrió un error
-                <environment names="Development">
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <strong>¡Error!</strong> Ocurrió: @ViewBag.Error
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true"><span class="lnr lnr-cross-circle"></span></span>
-                        </button>
-                        <a class="btn btn-primary" data-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false"><span class="lnr lnr-plus-circle"></span></a>
-                        <div class="collapse multi-collapse" id="multiCollapseExample1">
-                            @ViewBag.StackTrace
-                        </div>
-                    </div>
-                </environment>
-            }
+           
             <div class="m-1 p-1">
                 @RenderBody()
                 </main>
@@ -197,8 +183,7 @@
 
             <footer class="border-top footer text-muted">
                 <div class="container">
-                    
-                        Inmobiliaria Herrera - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                    <p class="text-center"> @ViewData["Title"] - Inmobiliaria Herrera @DateTime.Today.Year </p>
                 </div>
             </footer>
             <script src="~/lib/jquery/dist/jquery.min.js"></script>

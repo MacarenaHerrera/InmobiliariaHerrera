@@ -72,6 +72,89 @@ namespace Inmobiliaria.Models
             return lista;
         }
 
+        public List<Contrato> ObtenerVigentes()
+        {
+            List<Contrato> lista = new List<Contrato>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = $"SELECT c.Id, c.FechaInicio, c.FechaCierre, c.Estado, c.InmuebleId, c.InquilinoId, " +
+                   $"c.Precio, c.GaranteId, inm.Direccion, i.Nombre, i.Apellido, g.Nombre " +
+                   $"FROM Contratos c " +
+                   $"INNER JOIN Inmuebles inm ON c.InmuebleId = inm.Id " +
+                   $"INNER JOIN Inquilinos i ON c.InquilinoId = i.Id " +
+                   $"INNER JOIN Garantes g ON c.GaranteId = g.Id";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.CommandType = CommandType.Text;
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        Contrato c = new Contrato
+                        {
+                            Id = reader.GetInt32(0),
+                            FechaInicio = reader.GetDateTime(1),
+                            FechaCierre = reader.GetDateTime(2),
+                            Estado = reader.GetInt32(3),
+                            InmuebleId = reader.GetInt32(4),
+                            InquilinoId = reader.GetInt32(5),
+                            Precio = reader.GetDecimal(6),
+                            GaranteId = reader.GetInt32(7),
+
+                            Inmueble = new Inmueble
+                            {
+                                Id = reader.GetInt32(4),
+                                Direccion = reader.GetString(8)
+                            },
+
+                            Inquilino = new Inquilino
+                            {
+                                Id = reader.GetInt32(5),
+                                Nombre = reader.GetString(9),
+                                Apellido = reader.GetString(10)
+                            },
+
+                            Garante = new Garante
+                            {
+                                Id = reader.GetInt32(7),
+                                Nombre = reader.GetString(11)
+                            }
+                        };
+                        if (c.EsVigente)
+                            lista.Add(c);
+                    }
+                }
+            }
+
+            return lista;
+        }
+
+        public int Cancelar(int id)
+        {
+            int res = -1;
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string sql = "UPDATE Contratos SET " +
+                    $"{nameof(Contrato.FechaCierre)}=@fechaCierre, " +
+                     $"{nameof(Contrato.Estado)}=@estado " +
+                    $"WHERE {nameof(Contrato.Id)}=@id;";
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@fechaCierre", DateTime.Now);
+                    command.Parameters.AddWithValue("@estado", 2);
+                    var comando = command.Transaction;
+                    connection.Open();
+                    res = command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            return res;
+        }
+
         public int Alta(Contrato c)
         {
             int res = -1;
@@ -79,7 +162,7 @@ namespace Inmobiliaria.Models
             {
                 string sql = $" INSERT INTO Contratos(FechaInicio, FechaCierre, Estado, InmuebleId, InquilinoId, Precio, GaranteId) " +
                 "VALUES (@fechaInicio, @fechaCierre, @estado, @inmuebleId, @inquilinoId, @precio, @garanteId);" +
-                "UPDATE Inmuebles SET Inmuebles.Disponible = 0 WHERE Inmuebles.Id = @inmuebleId;" +
+                
                 "SELECT SCOPE_IDENTITY();";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
@@ -87,7 +170,7 @@ namespace Inmobiliaria.Models
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@fechaInicio", c.FechaInicio);
                     command.Parameters.AddWithValue("@fechaCierre", c.FechaCierre);
-                    command.Parameters.AddWithValue("@estado", c.Estado);
+                    command.Parameters.AddWithValue("@estado", 1);
                     command.Parameters.AddWithValue("@inmuebleId", c.InmuebleId);
                     command.Parameters.AddWithValue("@inquilinoId", c.InquilinoId);
                     command.Parameters.AddWithValue("@precio", c.Precio);
@@ -102,6 +185,8 @@ namespace Inmobiliaria.Models
             return c.Id;
         }
 
+
+
         public Contrato ObtenerContrato(int id)
         {
             Contrato contrato = new Contrato();
@@ -109,7 +194,7 @@ namespace Inmobiliaria.Models
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 string sql = $"SELECT c.Id, FechaInicio, FechaCierre, Estado, InmuebleId, InquilinoId, c.Precio, GaranteId, inm.Direccion, i.Nombre, i.Apellido, g.Nombre " +
-                    $" FROM Contratos c " +
+                    $"FROM Contratos c " +
                     $"INNER JOIN Inquilinos i ON c.InquilinoId = i.Id " +
                     $"INNER JOIN Inmuebles inm ON c.InmuebleId = inm.Id " +
                     $"INNER JOIN Garantes g ON c.GaranteId = g.Id" +
@@ -166,7 +251,7 @@ namespace Inmobiliaria.Models
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 string sql = $"UPDATE Contratos SET " + 
-                    "FechaInicio=@fechaInicio, FechaCierre=@fechaCierre, Estado=@estado," +
+                    "FechaInicio=@fechaInicio, FechaCierre=@fechaCierre, " +
                     "InmuebleId=@inmuebleId, InquilinoId=@inquilinoId, Precio=@precio, GaranteId=@garanteId " +
                     "WHERE Id = @id";
 
@@ -175,12 +260,12 @@ namespace Inmobiliaria.Models
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@fechaInicio", c.FechaInicio);
                     command.Parameters.AddWithValue("@fechaCierre", c.FechaCierre);
-                    command.Parameters.AddWithValue("@estado", c.Estado);
+                    //command.Parameters.AddWithValue("@estado", c.Estado);
                     command.Parameters.AddWithValue("@inmuebleId", c.InmuebleId);
                     command.Parameters.AddWithValue("@inquilinoId", c.InquilinoId);
                     command.Parameters.AddWithValue("@precio", c.Precio);
                     command.Parameters.AddWithValue("@garanteId", c.GaranteId);
-                    command.Parameters.AddWithValue("@id",c.Id);
+                    command.Parameters.AddWithValue("@id", c.Id);
 
                     connection.Open();
                     res = command.ExecuteNonQuery();
@@ -228,9 +313,9 @@ namespace Inmobiliaria.Models
                     $"i.{nameof(Contrato.Inquilino.Nombre)}, i.{nameof(Contrato.Inquilino.Apellido)},  " +
                     $"g.{nameof(Contrato.Garante.Nombre)} " +
                     $"FROM Contratos c " +
-                    $"INNER JOIN Inquilinos inq ON c.InquilinoId = inq.Id " +
+                    $"INNER JOIN Inquilinos i ON c.InquilinoId = i.Id " +
                     $"INNER JOIN Inmuebles inm ON c.InmuebleId = inm.Id " +
-                    $"INNER JOIN Garantes g ON c.InmuebleId = g.Id " +
+                    $"INNER JOIN Garantes g ON c.GaranteId = g.Id " +
                     $"WHERE inm.Id = @id";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -277,19 +362,17 @@ namespace Inmobiliaria.Models
             return lista;
         }
 
-        public int Baja(int id, int inmuebleId)
+        public int Baja(int id)
         {
             int res = -1;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"DELETE FROM Contratos WHERE Id = @id;" +
-                "UPDATE Inmuebles SET Inmuebles.Disponible = 1 WHERE Inmuebles.Id = @inmuebleId;";
+                string sql = "DELETE FROM Contratos WHERE Contratos.Id=@id;";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;
                     command.Parameters.AddWithValue("@id", id);
-                    command.Parameters.AddWithValue("@inmuebleId", inmuebleId);
                     connection.Open();
                     res = command.ExecuteNonQuery();
                     connection.Close();

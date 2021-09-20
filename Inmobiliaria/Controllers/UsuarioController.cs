@@ -16,6 +16,8 @@ using System.Data.SqlClient;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
+using System.IO;
+using Microsoft.VisualBasic.FileIO;
 
 namespace Inmobiliaria.Controllers
 {
@@ -41,7 +43,7 @@ namespace Inmobiliaria.Controllers
         }
 
         // GET: UsuarioController/Create
-        [Authorize(Policy = "SuperAdministrador")]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Crear()
         {
             ViewBag.Roles = Usuario.ObtenerRoles();
@@ -51,7 +53,7 @@ namespace Inmobiliaria.Controllers
         // POST: UsuarioController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Policy = "SuperAdministrador")]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Crear(Usuario ent)
         {
             if (!ModelState.IsValid)
@@ -65,9 +67,26 @@ namespace Inmobiliaria.Controllers
                         iterationCount: 1000,
                         numBytesRequested: 256 / 8));
                 ent.Clave = hashed;
+                ent.Avatar = "/uploads/avatarDefault.png";
 
                 int res = repositorio.Alta(ent);
-               
+                if (ent.AvatarFile != null && ent.Id > 0)
+                {
+                    string path = Path.Combine(environment.WebRootPath, "uploads");
+                    if (!Directory.Exists(path))
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+                    string fileName = "avatar" + ent.Id + Path.GetExtension(ent.AvatarFile.FileName);
+                    string pathCompleto = Path.Combine(path, fileName);
+                    using (FileStream stream = new FileStream(pathCompleto, FileMode.Create))
+                    {
+                        ent.AvatarFile.CopyTo(stream);
+                    }
+                    ent.Avatar = Path.Combine("/uploads", fileName);
+
+                    repositorio.Alta(ent);
+                }
                 TempData["Mensaje"] = $"Usuario creado con éxito! Id: {res}";
                 return RedirectToAction(nameof(Index));
             }
@@ -86,7 +105,7 @@ namespace Inmobiliaria.Controllers
         }
 
         // GET: UsuarioController/Edit/5
-        [Authorize(Policy = "SuperAdministrador")]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Editar(int id)
         {
             var ent = repositorio.Obtener(id);
@@ -96,7 +115,7 @@ namespace Inmobiliaria.Controllers
         }
 
         // GET: UsuarioController/EditarPerfil
-        [Authorize(Policy = "SuperAdministrador")]
+        [Authorize(Policy = "Administrador")]
         public ActionResult EditarPerfil()
         {
             var ent = repositorio.ObtenerPorEmail(User.Identity.Name);
@@ -107,18 +126,16 @@ namespace Inmobiliaria.Controllers
         // POST: UsuarioController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Policy = "SuperAdministrador")]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Editar(int id, Usuario ent)
         {
             try
             {
-                if (!User.IsInRole("Administrador"))
-                {
+                
                     var usuarioActual = repositorio.ObtenerPorEmail(User.Identity.Name);
                     if (usuarioActual.Id != id)//si no es admin, solo puede modificarse él mismo
                         return RedirectToAction(nameof(Index), "Home");
-                }
-
+                
                 string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                         password: ent.Clave,
                         salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
@@ -128,7 +145,28 @@ namespace Inmobiliaria.Controllers
                 ent.Clave = hashed;
                 ent.Rol = User.IsInRole("Administrador") ? ent.Rol : (int)rol.Empleado;
                 var entOriginal = repositorio.Obtener(id);
-               
+                ent.Avatar = entOriginal.Avatar;
+                if (ent.AvatarFile != null)
+                {
+                    string path = Path.Combine(environment.WebRootPath, "uploads");
+                    if (Path.GetFileName(ent.Avatar) != "avatarDefault.png")
+                    {
+                        if (FileSystem.FileExists(Path.Combine(path, Path.GetFileName(ent.Avatar))))
+                            FileSystem.DeleteFile(Path.Combine(path, Path.GetFileName(ent.Avatar)));
+                    }
+                    if (!Directory.Exists(path))
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+                    string fileName = "avatar" + ent.Id + Path.GetExtension(ent.AvatarFile.FileName);
+                    string pathCompleto = Path.Combine(path, fileName);
+                    using (FileStream stream = new FileStream(pathCompleto, FileMode.Create))
+                    {
+                        ent.AvatarFile.CopyTo(stream);
+                    }
+                    ent.Avatar = Path.Combine("/uploads", fileName);
+                }
+
                 repositorio.Modificacion(ent);
 
                 if (!User.IsInRole("Administrador"))
@@ -156,7 +194,7 @@ namespace Inmobiliaria.Controllers
         }
 
         // GET: UsuarioController/Delete/5
-        [Authorize(Policy = "SuperAdministrador")]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Baja(int id)
         {
             var ent = repositorio.Obtener(id);
@@ -167,12 +205,18 @@ namespace Inmobiliaria.Controllers
         // POST: UsuarioController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Policy = "SuperAdministrador")]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Baja(int id, Usuario ent)
         {
             try
             {
+               string filename = Path.GetFileName((string) TempData["AvatarPath"]);
                 repositorio.Baja(id);
+                if (filename != "avatarDefault.png")
+                {
+                    if (FileSystem.FileExists(Path.Combine(environment.WebRootPath, "uploads", filename)))
+                        FileSystem.DeleteFile(Path.Combine(environment.WebRootPath, "uploads", filename));
+                }
                 TempData["Mensaje"] = "Usuario eliminado con éxito!";
                 return RedirectToAction(nameof(Index));
             }
@@ -248,7 +292,7 @@ namespace Inmobiliaria.Controllers
 
 
         // GET: UsuarioController/Perfil
-        [Authorize(Policy = "SuperAdministrador")]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Perfil()
         {
             var ent = repositorio.ObtenerPorEmail(User.Identity.Name);

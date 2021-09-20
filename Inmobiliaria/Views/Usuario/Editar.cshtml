@@ -28,7 +28,11 @@
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
-
+            <div class="form-group">
+                <label asp-for="AvatarFile" class="control-label"></label>
+                <input asp-for="AvatarFile" name="AvatarFile" />
+                <span asp-validation-for="AvatarFile" class="text-danger"></span>
+            </div>
             @if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
             {
                 <div class="form-group">
@@ -43,9 +47,9 @@
                 </div>
             }
 
-        <div class="form-group">
-            <input type="submit" value="Guardar" class="btn btn-outline-dark" />
-        </div>
+            <div class="form-group">
+                <input type="submit" value="Guardar" class="btn btn-outline-dark" />
+            </div>
         </form>
     </div>
 </div>

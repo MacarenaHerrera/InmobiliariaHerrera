@@ -76,6 +76,7 @@ namespace Inmobiliaria.Controllers
         {
 
             var entidad = repositorioPago.ObtenerPorId(id);
+            ViewBag.NumeroPago = entidad.ObtenerPago();
             if (entidad == null) return RedirectToAction(nameof(Index));
             return View(entidad);
 

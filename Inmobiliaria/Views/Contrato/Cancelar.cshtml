@@ -1,0 +1,91 @@
+﻿@model Inmobiliaria.Models.Contrato
+
+@{
+    ViewData["Title"] = "Cancelar Contrato";
+   
+    var deuda = ViewBag.Debe;
+    var debe = 0;
+
+}
+
+<h1><i class="bi bi-x-square-fill">   </i>Cancelar</h1>
+
+<h4>Contrato</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Cancelar">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <dl class="row">
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.Id)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.Id)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.Precio)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.Precio)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.InquilinoId)  <i class="bi bi-file-person"></i>
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.Inquilino.Nombre)
+                    @Html.DisplayFor(model => model.Inquilino.Apellido)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.InmuebleId)  <i class="bi bi-house-fill"></i>
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.Inmueble.Direccion)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.FechaInicio)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.FechaInicio)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.FechaCierre)
+                </dt>
+                <dd class="col-sm-8">
+                    @Html.DisplayFor(model => model.FechaCierre)
+                </dd>
+                <dt class="col-sm-6 text-danger">
+                    Fecha de Cancelación
+                </dt>
+                <dd class="col-sm-8 text-danger">
+                    @DateTime.Now.ToString("dd/MM/yyyy")
+                </dd>
+                <dt class="col-sm-6 text-danger">
+                    Multa a pagar
+                </dt>
+                <dd class="col-sm-8 text-danger">
+                    $@Model.CalcularMulta()
+                </dd>
+                <dt class="col-sm-6 text-danger">
+                    Debe meses de pago:
+                </dt>
+                <dd class="col-sm-8 text-danger">
+                    @if(ViewBag.Debe != null)
+                    { debe = deuda; }
+                    @debe
+                </dd>
+            </dl>
+            <div class="form-group">
+                <input type="submit" value="Confirmar" class="btn btn-danger" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Vigentes">Volver a la lista</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,32 @@
+﻿@model Inmobiliaria.Models.FechasView
+
+@{
+    ViewData["Title"] = "Fechas";
+}
+
+<h4>Verificar Fechas</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-controller="Inmueble" asp-action="Disponibles">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="FechaInicio" class="control-label"></label>
+                <input asp-for="FechaInicio" class="form-control" />
+                <span asp-validation-for="FechaInicio" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FechaCierre" class="control-label"></label>
+                <input asp-for="FechaCierre" class="form-control" />
+                <span asp-validation-for="FechaCierre" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Ver disponibilidad" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

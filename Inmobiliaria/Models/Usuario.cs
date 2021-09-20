@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Inmobiliaria.Models
 	{
 		Empleado = 1,
 		Administrador = 2,
-		SuperAdministrador = 3
+		Usuario = 3
 	}
 
 	public class Usuario
@@ -30,7 +31,11 @@ namespace Inmobiliaria.Models
 
 		[Required, DataType(DataType.Password), StringLength(16, MinimumLength = 8, ErrorMessage = "La clave debe ser de 8 a 16 caracteres.")]
 		public string Clave { get; set; }
-	
+		public string Avatar { get; set; }
+		[Display(Name = "Avatar")]
+		[DataType(DataType.Upload)]
+		public IFormFile AvatarFile { get; set; }
+
 		public int Rol { get; set; }
 
 		public string RolNombre => Rol > 0 ? ((rol)Rol).ToString() : "";

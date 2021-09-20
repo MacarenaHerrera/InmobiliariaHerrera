@@ -217,6 +217,62 @@ namespace Inmobiliaria.Models
 			return lista;
 		}
 
+		public IList<Inmueble> ObtenerDisponiblesEntreFechas(DateTime fi, DateTime ff, int IdInm = 0)
+		{
+			IList<Inmueble> lista = new List<Inmueble>();
+
+			using (SqlConnection connection = new SqlConnection(connectionString))
+			{
+				string sql = $"SELECT i.{nameof(Inmueble.Id)}, {nameof(Inmueble.Direccion)}, {nameof(Inmueble.Ambientes)}, {nameof(Inmueble.Superficie)}, " +
+					$"{nameof(Inmueble.PropietarioId)}, Tipo, " +
+					$"{nameof(Inmueble.Precio)}, {nameof(Inmueble.Disponible)}, " +
+					$"{nameof(Inmueble.Duenio.Nombre)}, {nameof(Inmueble.Duenio.Apellido)} " +
+					$"FROM Inmuebles i INNER JOIN Propietarios p ON i.PropietarioId = p.Id " +
+					$"WHERE i.Disponible = 1 " +
+					$"AND i.{nameof(Inmueble.Id)} NOT IN " +
+						$"(SELECT {nameof(Contrato.InmuebleId)} FROM Contratos " +
+						$"WHERE (@fi >= FechaInicio AND @fi < FechaCierre) " +
+						$"OR (@ff > FechaInicio AND @ff <= FechaCierre) " +
+						$"OR (@fi <= FechaInicio AND @ff >= FechaCierre)); ";
+
+				if (IdInm > 0)
+					sql += $"AND i.{nameof(Inmueble.Id)} = @IdInm ";
+
+				using (SqlCommand command = new SqlCommand(sql, connection))
+				{
+					command.Parameters.AddWithValue("@fi", fi);
+					command.Parameters.AddWithValue("@ff", ff);
+					if (IdInm > 0)
+						command.Parameters.AddWithValue("@IdInm", IdInm);
+					connection.Open();
+					SqlDataReader reader = command.ExecuteReader();
+					while (reader.Read())
+					{
+						lista.Add(new Inmueble
+						{
+							Id = reader.GetInt32(0),
+							Direccion = reader.GetString(1),
+							Ambientes = reader.GetInt32(2),
+							Superficie = reader.GetInt32(3),
+							PropietarioId = reader.GetInt32(4),
+							TipoInmueble = reader.GetString(5),
+							Precio = reader.GetDecimal(6),
+							Disponible = reader.GetByte(7) == 1,
+
+							Duenio = new Propietario
+							{
+								Id = reader.GetInt32(4),
+								Nombre = reader.GetString(8),
+								Apellido = reader.GetString(9),
+							}
+						});
+					}
+				}
+			}
+
+			return lista;
+		}
+
 
 		public List<Inmueble> BuscarPorPropietario(int idPropietario)
 		{
@@ -230,7 +286,7 @@ namespace Inmobiliaria.Models
 
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
-					command.Parameters.Add("@propietarioId", SqlDbType.Int).Value = idPropietario;
+					command.Parameters.Add("@idPropietario", SqlDbType.Int).Value = idPropietario;
 					command.CommandType = CommandType.Text;
 					connection.Open();
 					var reader = command.ExecuteReader();

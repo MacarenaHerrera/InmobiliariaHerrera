@@ -1,9 +1,11 @@
 ﻿using Inmobiliaria.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -28,6 +30,8 @@ namespace Inmobiliaria.Controllers
             try
             {
                 var lista = repositorioGarante.Obtener();
+                ViewData[nameof(Garante)] = lista;
+                ViewData["Tittle"] = nameof(Garante);
                 ViewBag.Id = TempData["Id"];
                 if (TempData.ContainsKey("Mensaje"))
                     ViewBag.Mensaje = TempData["Mensaje"];
@@ -56,13 +60,15 @@ namespace Inmobiliaria.Controllers
         // POST: Garante/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Crear(Garante garante)
         {
             try
             {
-                repositorioGarante.Alta(garante);
-                return RedirectToAction("Crear", "Contrato");
-
+                int res = repositorioGarante.Alta(garante);
+                TempData["Id"] = garante.Id;
+                TempData["Mensaje"] = $"Garante creado con éxito! Id: {res}";
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception e)
             {
@@ -72,45 +78,85 @@ namespace Inmobiliaria.Controllers
         }
 
         // GET: Garante/Edit/5
-        public ActionResult Edit(int id)
+        [Authorize]
+        public ActionResult Editar(int id)
         {
-            return View();
+            var garante = repositorioGarante.ObtenerGarante(id);
+            return View(garante);
         }
 
         // POST: Garante/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Editar(int id, IFormCollection collection)
         {
             try
             {
+                Garante garante = repositorioGarante.ObtenerGarante(id);
+                garante.Nombre = collection["Nombre"];
+                garante.Dni = collection["Dni"];
+                garante.Telefono = collection["Telefono"];
+                
+
+                repositorioGarante.Modificar(garante);
+
+                TempData["Mensaje"] = "Datos guardados correctamente";
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                ViewBag.Error = ex.Message;
+                ViewBag.StackTrate = ex.StackTrace;
+                return View(null);
             }
         }
 
         // GET: Garante/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Garante/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        [Authorize(Policy = "Administrador")]
+        public ActionResult Eliminar(int id)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var entidad = repositorioGarante.ObtenerGarante(id);
+                if (TempData.ContainsKey("Mensaje"))
+                    ViewBag.Mensaje = TempData["Mensaje"];
+                if (TempData.ContainsKey("Error"))
+                    ViewBag.Error = TempData["Error"];
+                return View(entidad);
             }
-            catch
+            catch (Exception ex)
             {
+                ViewBag.Error = ex.Message;
+                ViewBag.StackTrate = ex.StackTrace;
                 return View();
             }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
+        public ActionResult Eliminar(int id, Garante entidad)
+        {
+            try
+            {
+                repositorioGarante.Baja(id);
+                TempData["Mensaje"] = "Eliminación realizada correctamente";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (SqlException e)
+            {
+                if (e.Number == 547)
+                {
+                    TempData["Error"] = "No se pudo eliminar, está en uso.";
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception)
+            {
+                TempData["Error"] = "Ocurrió un error inesperado.";
+                return RedirectToAction(nameof(Index));
+            }
+
         }
     }
 }

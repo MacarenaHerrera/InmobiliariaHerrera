@@ -22,8 +22,8 @@ namespace Inmobiliaria.Models
                 string sql = "INSERT INTO Usuarios " +
                     $"({nameof(Usuario.Nombre)}, {nameof(Usuario.Apellido)}, " +
                     $"{nameof(Usuario.Email)}, {nameof(Usuario.Clave)}, " +
-                    $"{nameof(Usuario.Rol)}) " +
-                    $"VALUES (@nombre, @apellido, @email, @clave, @rol);" +
+                     $"{nameof(Usuario.Avatar)}, {nameof(Usuario.Rol)}) " +
+                    $"VALUES (@nombre, @apellido, @email, @clave, @avatar, @rol);" +
                     "SELECT SCOPE_IDENTITY();";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -31,6 +31,7 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@apellido", u.Apellido);
                     command.Parameters.AddWithValue("@email", u.Email);
                     command.Parameters.AddWithValue("@clave", u.Clave);
+                    command.Parameters.AddWithValue("@avatar", u.Avatar);
                     command.Parameters.AddWithValue("@rol", u.Rol);
                     connection.Open();
                     res = Convert.ToInt32(command.ExecuteScalar());
@@ -72,6 +73,7 @@ namespace Inmobiliaria.Models
                     $"{nameof(Usuario.Apellido)}=@apellido, " +
                     $"{nameof(Usuario.Email)}=@email, " +
                     $"{nameof(Usuario.Clave)}=@clave, " +
+                    $"{nameof(Usuario.Avatar)}=@avatar, " +
                     $"{nameof(Usuario.Rol)}=@rol " +
                     $"WHERE {nameof(Usuario.Id)}=@id;";
                 using (SqlCommand command = new SqlCommand(sql, connection))
@@ -80,6 +82,7 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@apellido", u.Apellido);
                     command.Parameters.AddWithValue("@email", u.Email);
                     command.Parameters.AddWithValue("@clave", u.Clave);
+                    command.Parameters.AddWithValue("@avatar", u.Avatar);
                     command.Parameters.AddWithValue("@rol", u.Rol);
                     command.Parameters.AddWithValue("@id", u.Id);
                     connection.Open();
@@ -97,7 +100,7 @@ namespace Inmobiliaria.Models
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 string sql = $"SELECT {nameof(Usuario.Id)}, {nameof(Usuario.Nombre)}, {nameof(Usuario.Apellido)}, " +
-                    $"{nameof(Usuario.Email)}, {nameof(Usuario.Clave)}, {nameof(Usuario.Rol)} " +
+                    $"{nameof(Usuario.Email)}, {nameof(Usuario.Clave)}, {nameof(Usuario.Avatar)}, {nameof(Usuario.Rol)} " +
                     $"FROM Usuarios WHERE {nameof(Usuario.Id)}=@id;";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -113,7 +116,8 @@ namespace Inmobiliaria.Models
                             Apellido = reader.GetString(2),
                             Email = reader.GetString(3),
                             Clave = reader.GetString(4),
-                            Rol = reader.GetInt32(5)
+                            Avatar = reader.GetString(5),
+                            Rol = reader.GetInt32(6)
                         };
                     }
                     connection.Close();
@@ -130,7 +134,7 @@ namespace Inmobiliaria.Models
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 string sql = $"SELECT {nameof(Usuario.Id)}, {nameof(Usuario.Nombre)}, {nameof(Usuario.Apellido)}, " +
-                    $"{nameof(Usuario.Email)}, {nameof(Usuario.Clave)}, {nameof(Usuario.Rol)} " +
+                    $"{nameof(Usuario.Email)}, {nameof(Usuario.Clave)}, {nameof(Usuario.Avatar)}, {nameof(Usuario.Rol)} " +
                     $"FROM Usuarios WHERE {nameof(Usuario.Email)}=@email;";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -146,7 +150,8 @@ namespace Inmobiliaria.Models
                             Apellido = reader.GetString(2),
                             Email = reader.GetString(3),
                             Clave = reader.GetString(4),
-                            Rol = reader.GetInt32(5)
+                            Avatar = reader.GetString(5),
+                            Rol = reader.GetInt32(6)
                         };
                     }
                     connection.Close();
@@ -163,7 +168,7 @@ namespace Inmobiliaria.Models
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 string sql = $"SELECT {nameof(Usuario.Id)}, {nameof(Usuario.Nombre)}, {nameof(Usuario.Apellido)}, " +
-                    $"{nameof(Usuario.Email)}, {nameof(Usuario.Clave)}, {nameof(Usuario.Rol)} " +
+                    $"{nameof(Usuario.Email)}, {nameof(Usuario.Clave)}, {nameof(Usuario.Avatar)}, {nameof(Usuario.Rol)} " +
                     $"FROM Usuarios;";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -178,12 +183,12 @@ namespace Inmobiliaria.Models
                             Apellido = reader.GetString(2),
                             Email = reader.GetString(3),
                             Clave = reader.GetString(4),
-                            Rol = reader.GetInt32(5)
+                            Avatar = reader.GetString(5),
+                            Rol = reader.GetInt32(6)
                         });
                     }
                 }
             }
-
             return lista;
         }
     }

@@ -23,6 +23,12 @@
             @Html.DisplayFor(model => model.Importe)
         </dd>
         <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NumeroPago):
+        </dt>
+        <dd class="col-sm-10">
+          @ViewBag.NumeroPago
+        </dd>
+        <dt class="col-sm-2">
             Inquilino:
         </dt>
         <dd class="col-sm-10">
@@ -40,12 +46,6 @@
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Contrato.FechaInicio)
-        </dd>
-        <dt class="col-sm-2">
-            Fin contrato:
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Contrato.FechaCierre)
         </dd>
     </dl>
 </div>

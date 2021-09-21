@@ -61,7 +61,8 @@ namespace Inmobiliaria.Controllers
         public ActionResult Disponibles(FechasView f)
         {
             try {
-                IList<Inmueble> lista = repositorioInmueble.ObtenerDisponiblesEntreFechas(f.FechaInicio, f.FechaCierre);
+                IList<Inmueble> lista = repositorioInmueble.ObtenerDisponiblesEntreFechas(f.FechaInicio,
+                                                                                          f.FechaCierre);
                 ViewBag.Fechas = f;
                 TempData["FechaInicio"] = f.FechaInicio;
                 TempData["FechaCierre"] = f.FechaCierre;

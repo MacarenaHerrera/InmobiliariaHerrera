@@ -19,7 +19,7 @@ namespace Inmobiliaria.Controllers
         RepositorioGarante repositorioGarante;
         RepositorioPago repositorioPago;
         private readonly IConfiguration configuration;
-        Contrato contrato = new Contrato();
+       
 
         public ContratoController(IConfiguration configuration)
         {
@@ -37,20 +37,20 @@ namespace Inmobiliaria.Controllers
         {
             try
             {
-                ViewBag.Estados = Contrato.ObtenerEstados();
+                //ViewBag.Estados = Contrato.ObtenerEstados();
                 List<Contrato> lista = repositorioContrato.ObtenerTodos();
-                ViewData[nameof(Contrato)] = lista;
-                ViewData["Tittle"] = nameof(Contrato);
-                ViewBag.Id = TempData["Id"];
-                if (TempData.ContainsKey("Mensaje"))
-                    ViewBag.Mensaje = TempData["Mensaje"];
+                //ViewData[nameof(Contrato)] = lista;
+                //ViewData["Tittle"] = nameof(Contrato);
+                //ViewBag.Id = TempData["Id"];
+                //if (TempData.ContainsKey("Mensaje"))
+                  //  ViewBag.Mensaje = TempData["Mensaje"];
                 return View(lista);
             }
             catch (Exception ex)
             {
-
-                Json(new { Error = ex.Message });
-                return RedirectToAction(nameof(Index));
+                ViewBag.Error = ex.Message;
+                ViewBag.StackTrate = ex.StackTrace;
+                return View(nameof(Index));
             }
         }
         [Authorize]
@@ -66,9 +66,9 @@ namespace Inmobiliaria.Controllers
             }
             catch (Exception ex)
             {
-
-                Json(new { Error = ex.Message });
-                return RedirectToAction(nameof(Index));
+                ViewBag.Error = ex.Message;
+                ViewBag.StackTrate = ex.StackTrace;
+                return View(nameof(Index));
             }
         }
         [Authorize]
@@ -98,8 +98,8 @@ namespace Inmobiliaria.Controllers
                     ViewBag.Debe = debe;
                 }
 
-                if (ent == null)
-                return RedirectToAction(nameof(Index));
+                if (ent == null) return RedirectToAction(nameof(Index));
+
                 return View(ent);
             }
             catch (Exception ex)
@@ -110,7 +110,7 @@ namespace Inmobiliaria.Controllers
             }
         }
 
-        // GET: ContratoController/ConfirmarCancelar
+        // POST: ContratoController/ConfirmarCancelar
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -122,7 +122,7 @@ namespace Inmobiliaria.Controllers
             repositorioContrato.Cancelar(id);
                 
                 TempData["Mensaje"] = "Contrato cancelado con éxito!";
-                return View(nameof(Index));
+                return View(nameof(Vigentes));
             }
             catch (Exception ex)
             {
@@ -211,12 +211,13 @@ namespace Inmobiliaria.Controllers
             ViewBag.Garantes = repositorioGarante.Obtener();
             ViewBag.Inmuebles = repositorioInmueble.ObtenerTodos();
             
-           ViewBag.Inmueble = repositorioInmueble.ObtenerPorId(id);
+           //Inmueble inmueble = repositorioInmueble.ObtenerPorId(id);
+                ViewBag.InmuebleId = id;
 
-            ViewBag.FechaInicio = TempData.ContainsKey("FechaInicio") ? TempData["FechaInicio"] : DateTime.Now;
-            //ViewBag.FechaFinal = TempData.ContainsKey("FechaFinal") ? TempData["FechaFinal"] : DateTime.Now.AddMonths(24);
+                ViewBag.FechaInicio = TempData.ContainsKey("FechaInicio") ? TempData["FechaInicio"] : DateTime.Now;
+            ViewBag.FechaFinal = TempData.ContainsKey("FechaFinal") ? TempData["FechaFinal"] : DateTime.Now.AddMonths(24);
 
-                return View();
+                return View(nameof(Crear));
             }
             catch (Exception e)
             {
@@ -230,50 +231,15 @@ namespace Inmobiliaria.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult CrearPara(Contrato ent)
-        {
-
-            try
-            {
-                //ViewBag.Estados = Contrato.ObtenerEstados();
-
-                if (repositorioInmueble.ObtenerDisponiblesEntreFechas(ent.FechaInicio, ent.FechaCierre, ent.InmuebleId).Count() == 0)
-                    ViewBag.Error = "El inmueble seleccionado no se encuentra disponible en las fechas indicadas.";
-
-                repositorioContrato.Alta(ent);
-
-                var res = ent.Id;
-                TempData["Id"] = res;
-                TempData["Mensaje"] = $"Contrato creado con éxito! Id: {res}";
-                return RedirectToAction(nameof(Index));
-
-            }
-            catch (Exception e)
-            {
-                ViewBag.Error = e.Message;
-                ViewBag.StackTrate = e.StackTrace;
-                return View(ent);
-            }
-        }
-
-
-        // POST: ContratoController/Crear
-        [HttpPost]
-        [Authorize]
-        [ValidateAntiForgeryToken]
         public ActionResult Crear(Contrato ent)
         {
                     
             try
                 {
                 //ViewBag.Estados = Contrato.ObtenerEstados();
-
-                if (repositorioInmueble.ObtenerDisponiblesEntreFechas(ent.FechaInicio, ent.FechaCierre, ent.InmuebleId).Count() == 0)
-                    TempData["Error"] = "El inmueble seleccionado no se encuentra disponible en las fechas indicadas.";
-               
                 repositorioContrato.Alta(ent);
 
-                        var res = ent.Id;
+                        int res = ent.Id;
                         TempData["Id"] = res;
                         TempData["Mensaje"] = $"Contrato creado con éxito! Id: {res}";
                         return RedirectToAction(nameof(Index));
@@ -293,16 +259,26 @@ namespace Inmobiliaria.Controllers
         public ActionResult Editar(int id)
         {
             //ViewBag.Estados = Contrato.ObtenerEstados();
-            var contrato = repositorioContrato.ObtenerContrato(id);
-            ViewBag.Inquilinos = repositorioInquilino.Obtener();
-            ViewBag.Inmuebles = repositorioInmueble.ObtenerTodos();
-            ViewBag.Garantes = repositorioGarante.Obtener();
-          
-            if (TempData.ContainsKey("Mensaje"))
-                ViewBag.Mensaje = TempData["Mensaje"];
-            if (TempData.ContainsKey("Error"))
-                ViewBag.Error = TempData["Error"];
-            return View(contrato);
+            try
+            {
+                var contrato = repositorioContrato.ObtenerContrato(id);
+                ViewBag.Contrato = contrato;
+                //ViewBag.Inquilinos = repositorioInquilino.Obtener();
+                //ViewBag.Inmuebles = repositorioInmueble.ObtenerTodos();
+                ViewBag.Garantes = repositorioGarante.Obtener();
+
+                if (TempData.ContainsKey("Mensaje"))
+                    ViewBag.Mensaje = TempData["Mensaje"];
+                if (TempData.ContainsKey("Error"))
+                    ViewBag.Error = TempData["Error"];
+                return View(contrato);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = ex.Message;
+                ViewBag.StackTrate = ex.StackTrace;
+                return View(nameof(Index));
+            }
         }
 
         // POST: ContratoController/Edit/5
@@ -314,18 +290,14 @@ namespace Inmobiliaria.Controllers
             
             try
             {
-
-                if (repositorioInmueble.ObtenerDisponiblesEntreFechas(ent.FechaInicio, ent.FechaCierre, ent.InmuebleId).Count() == 0)
-                    TempData["Error"] = "El inmueble seleccionado no se encuentra disponible en las fechas indicadas.";
-                    
-                    repositorioContrato.Modificar(ent);
+                repositorioContrato.Modificar(ent);
                 TempData["Mensaje"] = "Contrato modificado con éxito!";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                ViewBag.Propietarios = repositorioInquilino.Obtener();
-                ViewBag.Inmueble = repositorioInmueble.ObtenerTodos();
+                ViewBag.Inquilinos = repositorioInquilino.Obtener();
+                ViewBag.Inmuebles = repositorioInmueble.ObtenerTodos();
                 ViewBag.Garantes = repositorioGarante.Obtener();
                 ViewBag.Error = ex.Message;
                 ViewBag.StackTrate = ex.StackTrace;

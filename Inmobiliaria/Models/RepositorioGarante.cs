@@ -21,8 +21,8 @@ namespace Inmobiliaria.Models
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"SELECT Id, Nombre, Dni, Telefono" +
-                    $" FROM Garantes";
+                string sql = $"SELECT Id, Nombre, Dni, Telefono " +
+                    $"FROM Garantes;";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;

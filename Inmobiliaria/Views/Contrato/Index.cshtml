@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Contratos";
-    List<Contrato> contratos = ViewData[nameof(Contrato)] as List<Contrato>;
+    //List<Contrato> contratos = ViewData[nameof(Contrato)] as List<Contrato>;
     string mensaje = TempData["Mensaje"] + "";
     string error = TempData["Error"] + "";
 
@@ -31,6 +31,7 @@
 <table class="table">
     <thead>
         <tr>
+            
             <th>
                 @Html.DisplayNameFor(model => model.FechaInicio)
             </th>
@@ -47,6 +48,10 @@
             <th>
                 @Html.DisplayNameFor(model => model.Precio)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GaranteId)
+            </th>
+            
             <th></th>
             <th></th>
         </tr>
@@ -54,29 +59,36 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FechaInicio)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FechaCierre)
-                </td>
+        <tr>
+            
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaInicio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaCierre)
+            </td>
 
-                <td>
-                    @Html.DisplayFor(modelItem => item.InmuebleId)
-                    @(item.Inmueble.Direccion)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.InquilinoId)
-                    @(item.Inquilino.Nombre + " " + item.Inquilino.Apellido)
-                </td>
-                <td>
-                    $@Html.DisplayFor(modelItem => item.Precio)
-                </td>
-                <td>
-                    <a asp-controller="Pago" asp-action="PorContrato" asp-route-id="@item.Id">Pagos <i class="bi bi-credit-card-fill"></i></a>
-                </td>
-                <td>
+            <td>
+                @Html.DisplayFor(modelItem => item.InmuebleId)
+                @(item.Inmueble.Direccion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.InquilinoId)
+                @(item.Inquilino.Nombre + " " + item.Inquilino.Apellido)
+            </td>
+            <td>
+                $@Html.DisplayFor(modelItem => item.Precio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GaranteId)
+                @(item.Garante.Nombre)
+            </td>
+           
+            <td>
+                <a asp-controller="Pago" asp-action="PorContrato" asp-route-id="@item.Id">Pagos <i class="bi bi-credit-card-fill"></i></a>
+            </td>
+            <td>
+                <span>
                     @if (User.IsInRole("Administrador") || User.IsInRole("Empleado"))
                     {
                         <a asp-action="Editar" asp-route-id="@item.Id" class="btn btn-outline-primary" title="Editar">
@@ -84,6 +96,12 @@
                                 <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z" />
                             </svg>
                         </a>
+                    }
+
+                    @if (item.EsVigente && (User.IsInRole("Administrador") || User.IsInRole("Empleado")))
+                    {
+                        <a asp-action="Cancelar" asp-route-id="@item.Id" class="btn btn-outline-danger" title="Cancelar">
+                        <i class="bi bi-x-square-fill text-danger"></i></a>
                     }
                     @if (User.IsInRole("Administrador"))
                     {
@@ -96,13 +114,12 @@
                     }
                     @if (item.FechaCierre <= DateTime.Now)
                     {
+                        <hr />
                         <a asp-action="Renovar" asp-route-id="@item.Id"><i class="bi bi-calendar2-plus-fill text-success"> Renovar Contrato </i></a>
                     }
-                   
-                    <a asp-action="Cancelar" asp-route-id="@item.Id" class="btn btn-outline-danger" title="Cancelar">Cancelar</a>
-                    
-                </td>
-            </tr>
+                </span>
+            </td>
+        </tr>
         }
     </tbody>
 </table>

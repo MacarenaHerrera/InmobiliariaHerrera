@@ -181,14 +181,14 @@ namespace Inmobiliaria.Models
                     connection.Close();
                 }
             }
-            return c.Id;
+            return res;
         }
 
 
 
         public Contrato ObtenerContrato(int id)
         {
-            Contrato contrato = new Contrato();
+            Contrato contrato = null;
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -196,15 +196,14 @@ namespace Inmobiliaria.Models
                     $"FROM Contratos c " +
                     $"INNER JOIN Inquilinos i ON c.InquilinoId = i.Id " +
                     $"INNER JOIN Inmuebles inm ON c.InmuebleId = inm.Id " +
-                    $"INNER JOIN Garantes g ON c.GaranteId = g.Id" +
-                    $" WHERE c.Id = @id";
+                    $"INNER JOIN Garantes g ON c.GaranteId = g.Id " +
+                    $"WHERE c.Id = @id;";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
-                    command.Parameters.Add("@id", SqlDbType.Int).Value = id;
-                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@id", id);
                     connection.Open();
-                    var reader = command.ExecuteReader();
+                    SqlDataReader reader = command.ExecuteReader();
                     if (reader.Read())
                     {
                         contrato = new Contrato
@@ -251,7 +250,7 @@ namespace Inmobiliaria.Models
             {
                 string sql = $"UPDATE Contratos SET " + 
                     "FechaInicio=@fechaInicio, FechaCierre=@fechaCierre, " +
-                    "InmuebleId=@inmuebleId, InquilinoId=@inquilinoId, Precio=@precio, GaranteId=@garanteId " +
+                    "Precio=@precio, GaranteId=@garanteId " +
                     "WHERE Id = @id";
 
                 using (SqlCommand command = new SqlCommand(sql, connection))
@@ -260,8 +259,8 @@ namespace Inmobiliaria.Models
                     command.Parameters.AddWithValue("@fechaInicio", c.FechaInicio);
                     command.Parameters.AddWithValue("@fechaCierre", c.FechaCierre);
                     //command.Parameters.AddWithValue("@estado", c.Estado);
-                    command.Parameters.AddWithValue("@inmuebleId", c.InmuebleId);
-                    command.Parameters.AddWithValue("@inquilinoId", c.InquilinoId);
+                    //command.Parameters.AddWithValue("@inmuebleId", c.InmuebleId);
+                    //command.Parameters.AddWithValue("@inquilinoId", c.InquilinoId);
                     command.Parameters.AddWithValue("@precio", c.Precio);
                     command.Parameters.AddWithValue("@garanteId", c.GaranteId);
                     command.Parameters.AddWithValue("@id", c.Id);
